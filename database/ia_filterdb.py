@@ -23,6 +23,8 @@ class Media(Document):
     file_id = fields.StrField(attribute='_id')
     file_ref = fields.StrField(allow_none=True)
     file_name = fields.StrField(required=True)
+    chat_id = fields.IntField(required=True)
+    message_id = fields.IntField(required=True)
     file_size = fields.IntField(required=True)
     file_type = fields.StrField(allow_none=True)
     mime_type = fields.StrField(allow_none=True)
@@ -30,7 +32,8 @@ class Media(Document):
 
     class Meta:
         indexes = ('$file_name', )
-        collection_name = COLLECTION_NAME
+        collection_name = Config.COLLECTION_NAME
+
 
 
 async def save_file(media):
@@ -40,10 +43,12 @@ async def save_file(media):
     file_id, file_ref = unpack_new_file_id(media.file_id)
     file_name = re.sub(r"(_|\-|\.|\+)", " ", str(media.file_name))
     try:
-        file = Media(
+        file = Media(          
             file_id=file_id,
             file_ref=file_ref,
             file_name=file_name,
+            chat_id=media.chat_id,
+            message_id=media.message_id,
             file_size=media.file_size,
             file_type=media.file_type,
             mime_type=media.mime_type,
@@ -67,7 +72,7 @@ async def save_file(media):
 
 
 
-async def get_search_results(chat_id, query, file_type=None, max_results=10, offset=0, filter=False):
+async def get_search_results(chat_id, query, file_type=None, max_results=10, offset=0, filter=False, video: bool = True, photo: bool = True):
     """For given query return (results, next_offset)"""
     if chat_id is not None:
         settings = await get_settings(int(chat_id))
@@ -107,6 +112,12 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
 
     if file_type:
         filter['file_type'] = file_type
+
+    if not video:
+        filter = {"$and": [filter, {"file_type": {"$ne": "video"}}]}   
+
+    if not photo:
+        filter = {"$and": [filter, {"file_type": {"$ne": "photo"}}]}   
 
     total_results = await Media.count_documents(filter)
     next_offset = offset + max_results
