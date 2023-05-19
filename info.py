@@ -43,9 +43,9 @@ NO_RESULTS_MSG = bool(environ.get("NO_RESULTS_MSG", False))
 
 # MongoDB information
 DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://ilfilms:ilfilms@cluster1.wteyv7d.mongodb.net/?retryWrites=true&w=majority")
-DATABASE_NAME = environ.get('DATABASE_NAME', "Moviemaxss2)
+DATABASE_NAME = environ.get('DATABASE_NAME', "Moviemaxss2")
 COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files')
-
+COLLECTION_NAME2 = environ.get('COLLECTION_NAME2', 'PM File')
 
 # Others
 IS_VERIFY = bool(environ.get('IS_VERIFY', False))
