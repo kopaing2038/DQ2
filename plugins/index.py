@@ -49,8 +49,8 @@ async def index_files(bot, query):
         chat = chat
     await index_files_to_db(int(lst_msg_id), chat, msg, bot)
 
-@Client.on_callback_query(filters.regex(r'^index2'))
-async def index_files2(bot, query):
+@Client.on_callback_query(filters.regex(r'^ch2index'))
+async def index_22files(bot, query):
     if query.data.startswith('index_cancel'):
         temp.CANCEL = True
         return await query.answer("Cancelling Indexing")
@@ -81,7 +81,7 @@ async def index_files2(bot, query):
         chat = int(chat)
     except:
         chat = chat
-    await index_files_to_db2(int(lst_msg_id), chat, msg, bot)
+    await index_files_to_22db(int(lst_msg_id), chat, msg, bot)
 
 
 @Client.on_message((filters.forwarded | (filters.regex("(https://)?(t\.me/|telegram\.me/|telegram\.dog/)(c/)?(\d+|[a-zA-Z_0-9]+)/(\d+)$")) & filters.text ) & filters.private & filters.incoming)
@@ -124,7 +124,7 @@ async def send_for_index(bot, message):
             ],
             [
                 InlineKeyboardButton('Yes 2',
-                                     callback_data=f'index2#accept#{chat_id}#{last_msg_id}#{message.from_user.id}')
+                                     callback_data=f'ch2index#accept#{chat_id}#{last_msg_id}#{message.from_user.id}')
             ],
             [
                 InlineKeyboardButton('close', callback_data='close_data'),
@@ -149,7 +149,7 @@ async def send_for_index(bot, message):
         ],
         [
             InlineKeyboardButton('Accept Index 2 ',
-                                 callback_data=f'index2#accept#{chat_id}#{last_msg_id}#{message.from_user.id}')
+                                 callback_data=f'ch2index#accept#{chat_id}#{last_msg_id}#{message.from_user.id}')
         ],
         [
             InlineKeyboardButton('Reject Index',
@@ -236,7 +236,7 @@ async def index_files_to_db(lst_msg_id: int, chat: int, msg: types.Message, bot)
         else:
             await msg.edit(f'Channel 1 Database File Succesfully saved <code>{total_files}</code> to dataBase!\nDuplicate Files Skipped: <code>{duplicate}</code>\nDeleted Messages Skipped: <code>{deleted}</code>\nNon-Media messages skipped: <code>{no_media + unsupported}</code>(Unsupported Media - `{unsupported}` )\nErrors Occurred: <code>{errors}</code>')
             
-async def index_files_to_db2(lst_msg_id: int, chat: int, msg: types.Message, bot): #(lst_msg_id, chat, msg, bot)
+async def index_files_to_22db(lst_msg_id: int, chat: int, msg: types.Message, bot): #(lst_msg_id, chat, msg, bot)
     total_files = 0
     duplicate = 0
     errors = 0
