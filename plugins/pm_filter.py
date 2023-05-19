@@ -554,7 +554,7 @@ async def language_check(bot, query):
             pass
         await query.answer()
     else:
-        return await query.answer(f"Sorry, သင့်အတွက် {movie.upper()} ဖိုင်တွေ ရှာမတွေ့ပါဘူး။\n\n Sᴏʀʀʏ, Nᴏ ғɪʟᴇs ғᴏᴜɴᴅ ғᴏʀ ʏᴏᴜʀ ᴏ̨ᴜᴇʀʏ {movie}.", show_alert=True)
+        return await query.answer(f"Sorry, သင့်အတွက်  ဖိုင်တွေ ရှာမတွေ့ပါဘူး။ တစ်ခြားတစ်ခုကို နှိပ်ကြည့်ပါ။.", show_alert=True)
     
 @Client.on_callback_query(filters.regex(r"^select_lang"))
 async def select_language(bot, query):
