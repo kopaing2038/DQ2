@@ -32,7 +32,7 @@ class Media(Document):
 
     class Meta:
         indexes = ('$file_name', )
-        collection_name = Config.COLLECTION_NAME
+        collection_name = COLLECTION_NAME
 
 
 
