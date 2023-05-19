@@ -6,6 +6,7 @@ from pyrogram.errors.exceptions.bad_request_400 import ChannelInvalid, ChatAdmin
 from info import ADMINS
 from info import INDEX_REQ_CHANNEL as LOG_CHANNEL
 from database.ia_filterdb import save_file
+from database.pm_filterDb import save_file2
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from utils import temp
 import re
@@ -48,6 +49,40 @@ async def index_files(bot, query):
         chat = chat
     await index_files_to_db(int(lst_msg_id), chat, msg, bot)
 
+@Client.on_callback_query(filters.regex(r'^index2'))
+async def index_files2(bot, query):
+    if query.data.startswith('index_cancel'):
+        temp.CANCEL = True
+        return await query.answer("Cancelling Indexing")
+    _, raju, chat, lst_msg_id, from_user = query.data.split("#")
+    if raju == 'reject':
+        await query.message.delete()
+        await bot.send_message(int(from_user),
+                               f'Your Submission for indexing {chat} has been decliened by our moderators.',
+                               reply_to_message_id=int(lst_msg_id))
+        return
+
+    if lock.locked():
+        return await query.answer('Wait until previous process complete.', show_alert=True)
+    msg = query.message
+
+    await query.answer('Processing...⏳', show_alert=True)
+    if int(from_user) not in ADMINS:
+        await bot.send_message(int(from_user),
+                               f'Your Submission for indexing {chat} has been accepted by our moderators and will be added soon.',
+                               reply_to_message_id=int(lst_msg_id))
+    await msg.edit(
+        "Starting Indexing",
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton('Cancel', callback_data='index_cancel')]]
+        )
+    )
+    try:
+        chat = int(chat)
+    except:
+        chat = chat
+    await index_files_to_db2(int(lst_msg_id), chat, msg, bot)
+
 
 @Client.on_message((filters.forwarded | (filters.regex("(https://)?(t\.me/|telegram\.me/|telegram\.dog/)(c/)?(\d+|[a-zA-Z_0-9]+)/(\d+)$")) & filters.text ) & filters.private & filters.incoming)
 async def send_for_index(bot, message):
@@ -88,6 +123,10 @@ async def send_for_index(bot, message):
                                      callback_data=f'index#accept#{chat_id}#{last_msg_id}#{message.from_user.id}')
             ],
             [
+                InlineKeyboardButton('Yes 2',
+                                     callback_data=f'index2#accept#{chat_id}#{last_msg_id}#{message.from_user.id}')
+            ],
+            [
                 InlineKeyboardButton('close', callback_data='close_data'),
             ]
         ]
@@ -107,6 +146,10 @@ async def send_for_index(bot, message):
         [
             InlineKeyboardButton('Accept Index',
                                  callback_data=f'index#accept#{chat_id}#{last_msg_id}#{message.from_user.id}')
+        ],
+        [
+            InlineKeyboardButton('Accept Index 2 ',
+                                 callback_data=f'index2#accept#{chat_id}#{last_msg_id}#{message.from_user.id}')
         ],
         [
             InlineKeyboardButton('Reject Index',
@@ -134,7 +177,7 @@ async def set_skip_number(bot, message):
         await message.reply("Give me a skip number")
 
 
-async def index_files_to_db(lst_msg_id, chat, msg, bot):
+async def index_files_to_db(lst_msg_id: int, chat: int, msg: types.Message, bot): #(lst_msg_id, chat, msg, bot)
     total_files = 0
     duplicate = 0
     errors = 0
@@ -147,14 +190,14 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
             temp.CANCEL = False
             async for message in bot.iter_messages(chat, lst_msg_id, temp.CURRENT):
                 if temp.CANCEL:
-                    await msg.edit(f"Successfully Cancelled!!\n\nSaved <code>{total_files}</code> files to dataBase!\nDuplicate Files Skipped: <code>{duplicate}</code>\nDeleted Messages Skipped: <code>{deleted}</code>\nNon-Media messages skipped: <code>{no_media + unsupported}</code>(Unsupported Media - `{unsupported}` )\nErrors Occurred: <code>{errors}</code>")
+                    await msg.edit(f"Channel 1 Successfully Cancelled!!\n\nSaved <code>{total_files}</code> files to dataBase!\nDuplicate Files Skipped: <code>{duplicate}</code>\nDeleted Messages Skipped: <code>{deleted}</code>\nNon-Media messages skipped: <code>{no_media + unsupported}</code>(Unsupported Media - `{unsupported}` )\nErrors Occurred: <code>{errors}</code>")
                     break
                 current += 1
-                if current % 20 == 0:
+                if current % 200 == 0:
                     can = [[InlineKeyboardButton('Cancel', callback_data='index_cancel')]]
                     reply = InlineKeyboardMarkup(can)
                     await msg.edit_text(
-                        text=f"Total messages fetched: <code>{current}</code>\nTotal messages saved: <code>{total_files}</code>\nDuplicate Files Skipped: <code>{duplicate}</code>\nDeleted Messages Skipped: <code>{deleted}</code>\nNon-Media messages skipped: <code>{no_media + unsupported}</code>(Unsupported Media - `{unsupported}` )\nErrors Occurred: <code>{errors}</code>",
+                        text=f"Channel 1 Total messages fetched: <code>{current}</code>\nTotal messages saved: <code>{total_files}</code>\nDuplicate Files Skipped: <code>{duplicate}</code>\nDeleted Messages Skipped: <code>{deleted}</code>\nNon-Media messages skipped: <code>{no_media + unsupported}</code>(Unsupported Media - `{unsupported}` )\nErrors Occurred: <code>{errors}</code>",
                         reply_markup=reply)
                 if message.empty:
                     deleted += 1
@@ -162,7 +205,7 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                 elif not message.media:
                     no_media += 1
                     continue
-                elif message.media not in [enums.MessageMediaType.VIDEO, enums.MessageMediaType.AUDIO, enums.MessageMediaType.DOCUMENT]:
+                elif message.media not in [enums.MessageMediaType.VIDEO, enums.MessageMediaType.AUDIO, enums.MessageMediaType.DOCUMENT, enums.MessageMediaType.PHOTO]:
                     unsupported += 1
                     continue
                 media = getattr(message, message.media.value, None)
@@ -170,7 +213,16 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                     unsupported += 1
                     continue
                 media.file_type = message.media.value
-                media.caption = message.caption
+                if media.file_type == "photo":
+                    media.file_name = message.caption.split('\n')[0] if message.caption else ""
+                    media.mime_type = "image/jpg"
+                elif media.file_type == "document" and message.document is not None:
+                    media.file_name = message.document.file_name if message.document.file_name else ""
+                    media.mime_type = message.document.mime_type if message.document.mime_type else ""
+                media.caption = message.caption if message.caption else ""
+                media.caption = message.caption                
+                media.chat_id = message.chat.id
+                media.message_id = message.id
                 aynav, vnay = await save_file(media)
                 if aynav:
                     total_files += 1
@@ -182,4 +234,64 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
             logger.exception(e)
             await msg.edit(f'Error: {e}')
         else:
-            await msg.edit(f'Succesfully saved <code>{total_files}</code> to dataBase!\nDuplicate Files Skipped: <code>{duplicate}</code>\nDeleted Messages Skipped: <code>{deleted}</code>\nNon-Media messages skipped: <code>{no_media + unsupported}</code>(Unsupported Media - `{unsupported}` )\nErrors Occurred: <code>{errors}</code>')
+            await msg.edit(f'Channel 1 Database File Succesfully saved <code>{total_files}</code> to dataBase!\nDuplicate Files Skipped: <code>{duplicate}</code>\nDeleted Messages Skipped: <code>{deleted}</code>\nNon-Media messages skipped: <code>{no_media + unsupported}</code>(Unsupported Media - `{unsupported}` )\nErrors Occurred: <code>{errors}</code>')
+            
+async def index_files_to_db2(lst_msg_id: int, chat: int, msg: types.Message, bot): #(lst_msg_id, chat, msg, bot)
+    total_files = 0
+    duplicate = 0
+    errors = 0
+    deleted = 0
+    no_media = 0
+    unsupported = 0
+    async with lock:
+        try:
+            current = temp.CURRENT
+            temp.CANCEL = False
+            async for message in bot.iter_messages(chat, lst_msg_id, temp.CURRENT):
+                if temp.CANCEL:
+                    await msg.edit(f"Channel 2 Successfully Cancelled!!\n\nSaved <code>{total_files}</code> files to dataBase!\nDuplicate Files Skipped: <code>{duplicate}</code>\nDeleted Messages Skipped: <code>{deleted}</code>\nNon-Media messages skipped: <code>{no_media + unsupported}</code>(Unsupported Media - `{unsupported}` )\nErrors Occurred: <code>{errors}</code>")
+                    break
+                current += 1
+                if current % 200 == 0:
+                    can = [[InlineKeyboardButton('Cancel', callback_data='index_cancel')]]
+                    reply = InlineKeyboardMarkup(can)
+                    await msg.edit_text(
+                        text=f"Channel 2 Total messages fetched: <code>{current}</code>\nTotal messages saved: <code>{total_files}</code>\nDuplicate Files Skipped: <code>{duplicate}</code>\nDeleted Messages Skipped: <code>{deleted}</code>\nNon-Media messages skipped: <code>{no_media + unsupported}</code>(Unsupported Media - `{unsupported}` )\nErrors Occurred: <code>{errors}</code>",
+                        reply_markup=reply)
+                if message.empty:
+                    deleted += 1
+                    continue
+                elif not message.media:
+                    no_media += 1
+                    continue
+                elif message.media not in [enums.MessageMediaType.VIDEO, enums.MessageMediaType.AUDIO, enums.MessageMediaType.DOCUMENT, enums.MessageMediaType.PHOTO]:
+                    unsupported += 1
+                    continue
+                media = getattr(message, message.media.value, None)
+                if not media:
+                    unsupported += 1
+                    continue
+                media.file_type = message.media.value
+                if media.file_type == "photo":
+                    media.file_name = message.caption.split('\n')[0] if message.caption else ""
+                    media.mime_type = "image/jpg"
+                elif media.file_type == "document" and message.document is not None:
+                    media.file_name = message.document.file_name if message.document.file_name else ""
+                    media.mime_type = message.document.mime_type if message.document.mime_type else ""
+                media.caption = message.caption if message.caption else ""
+                media.caption = message.caption                
+                media.chat_id = message.chat.id
+                media.message_id = message.id
+                aynav, vnay = await save_file2(media)
+                if aynav:
+                    total_files += 1
+                elif vnay == 0:
+                    duplicate += 1
+                elif vnay == 2:
+                    errors += 1
+        except Exception as e:
+            logger.exception(e)
+            await msg.edit(f'Error: {e}')
+        else:
+            await msg.edit(f'Channel 2 Database File Succesfully saved <code>{total_files}</code> to dataBase!\nDuplicate Files Skipped: <code>{duplicate}</code>\nDeleted Messages Skipped: <code>{deleted}</code>\nNon-Media messages skipped: <code>{no_media + unsupported}</code>(Unsupported Media - `{unsupported}` )\nErrors Occurred: <code>{errors}</code>')
+            
