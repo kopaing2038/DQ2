@@ -1148,6 +1148,12 @@ async def cb_handler(client: Client, query: CallbackQuery):
                                          callback_data=f'setgs#is_shortlink#{settings["is_shortlink"]}#{str(grp_id)}'),
                     InlineKeyboardButton('✔ Oɴ' if settings["is_shortlink"] else '✘ Oғғ',
                                          callback_data=f'setgs#is_shortlink#{settings["is_shortlink"]}#{str(grp_id)}')
+                ],
+                [
+                    InlineKeyboardButton('DOWNLOAD_BUTTON',
+                                         callback_data=f'setgs#DOWNLOAD_BUTTON#{settings["DOWNLOAD_BUTTON"]}#{str(grp_id)}'),
+                    InlineKeyboardButton('✔ Oɴ' if settings["DOWNLOAD_BUTTON"] else '✘ Oғғ',
+                                         callback_data=f'setgs#DOWNLOAD_BUTTON#{settings["DOWNLOAD_BUTTON"]}#{str(grp_id)}')
                 ]
             ]
             reply_markup = InlineKeyboardMarkup(buttons)
@@ -1235,6 +1241,12 @@ async def cb_handler(client: Client, query: CallbackQuery):
                                          callback_data=f'setgs#is_shortlink#{settings["is_shortlink"]}#{str(grp_id)}'),
                     InlineKeyboardButton('✔ Oɴ' if settings["is_shortlink"] else '✘ Oғғ',
                                          callback_data=f'setgs#is_shortlink#{settings["is_shortlink"]}#{str(grp_id)}')
+                ],
+                [
+                    InlineKeyboardButton('DOWNLOAD_BUTTON',
+                                         callback_data=f'setgs#DOWNLOAD_BUTTON#{settings["DOWNLOAD_BUTTON"]}#{str(grp_id)}'),
+                    InlineKeyboardButton('✔ Oɴ' if settings["DOWNLOAD_BUTTON"] else '✘ Oғғ',
+                                         callback_data=f'setgs#DOWNLOAD_BUTTON#{settings["DOWNLOAD_BUTTON"]}#{str(grp_id)}')
                 ]
             ]
             reply_markup = InlineKeyboardMarkup(buttons)
@@ -1737,6 +1749,12 @@ async def cb_handler(client: Client, query: CallbackQuery):
                                          callback_data=f'setgs#is_shortlink#{settings["is_shortlink"]}#{str(grp_id)}'),
                     InlineKeyboardButton('✔ Oɴ' if settings["is_shortlink"] else '✘ Oғғ',
                                          callback_data=f'setgs#is_shortlink#{settings["is_shortlink"]}#{str(grp_id)}')
+                ],
+                [
+                    InlineKeyboardButton('DOWNLOAD_BUTTON',
+                                         callback_data=f'setgs#DOWNLOAD_BUTTON#{settings["DOWNLOAD_BUTTON"]}#{str(grp_id)}'),
+                    InlineKeyboardButton('✔ Oɴ' if settings["DOWNLOAD_BUTTON"] else '✘ Oғғ',
+                                         callback_data=f'setgs#DOWNLOAD_BUTTON#{settings["DOWNLOAD_BUTTON"]}#{str(grp_id)}')
                 ]
             ]
             reply_markup = InlineKeyboardMarkup(buttons)
