@@ -687,6 +687,16 @@ async def settings(client, message):
                     callback_data=f'setgs#is_shortlink#{settings["is_shortlink"]}#{grp_id}',
                 ),
             ],
+            [
+                InlineKeyboardButton(
+                    'DOWNLOAD_BUTTON',
+                    callback_data=f'setgs#DOWNLOAD_BUTTON#{settings["DOWNLOAD_BUTTON"]}#{grp_id}',
+                ),
+                InlineKeyboardButton(
+                    '✔ Oɴ' if settings["DOWNLOAD_BUTTON"] else '✘ Oғғ',
+                    callback_data=f'setgs#DOWNLOAD_BUTTON#{settings["DOWNLOAD_BUTTON"]}#{grp_id}',
+                ),
+            ],
         ]
 
         btn = [[
