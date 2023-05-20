@@ -136,7 +136,8 @@ class Database:
             'template': IMDB_TEMPLATE,
             'shortlink': SHORTLINK_URL,
             'shortlink_api': SHORTLINK_API,
-            'is_shortlink': IS_SHORTLINK
+            'is_shortlink': IS_SHORTLINK,
+            'DOWNLOAD_BUTTON': DOWNLOAD_BUTTON,
         }
         chat = await self.grp.find_one({'id':int(id)})
         if chat:
