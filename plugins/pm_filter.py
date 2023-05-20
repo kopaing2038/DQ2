@@ -517,35 +517,45 @@ async def language_check(bot, query):
                     InlineKeyboardButton(f'ꜱᴇʀɪᴇꜱ', 'sinfo')
                 ]
             )
-        
-        btn.insert(0, [
-            InlineKeyboardButton("! Sᴇɴᴅ Aʟʟ Tᴏ PM !", callback_data=f"send_fall#{pre}#{0}#{userid}"),
-            InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။ !", callback_data=f"select_lang#{userid}")
-        ])
+        settings = await get_settings(query.message.chat.id)
+        if not settings['DOWNLOAD_BUTTON']:
+            if offset != "":
+                key = f"{query.message.chat.id}-{query.message.id}"
+                BUTTONS[key] = movie
+                req = userid
+                try:
+                    if settings['max_btn']:
+                        btn.append(
+                            [InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"), InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}",callback_data="pages"), InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪",callback_data=f"next_{req}_{key}_{offset}")]
+                        )
 
-        if offset != "":
-            key = f"{query.message.chat.id}-{query.message.id}"
-            BUTTONS[key] = movie
-            req = userid
-            try:
-                if settings['max_btn']:
+                    else:
+                        btn.append(
+                            [InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"), InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/int(MAX_B_TN))}",callback_data="pages"), InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪",callback_data=f"next_{req}_{key}_{offset}")]
+                        )
+                except KeyError:
+                    await save_group_settings(query.message.chat.id, 'max_btn', True)
                     btn.append(
                         [InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"), InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}",callback_data="pages"), InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪",callback_data=f"next_{req}_{key}_{offset}")]
                     )
-
-                else:
-                    btn.append(
-                        [InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"), InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/int(MAX_B_TN))}",callback_data="pages"), InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪",callback_data=f"next_{req}_{key}_{offset}")]
-                    )
-            except KeyError:
-                await save_group_settings(query.message.chat.id, 'max_btn', True)
+            else:
                 btn.append(
-                    [InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"), InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}",callback_data="pages"), InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪",callback_data=f"next_{req}_{key}_{offset}")]
+                    [InlineKeyboardButton(text="𝐍𝐎 𝐌𝐎𝐑𝐄 𝐏𝐀𝐆𝐄𝐒 𝐀𝐕𝐀𝐈𝐋𝐀𝐁𝐋𝐄",callback_data="pages")]
                 )
+
         else:
-            btn.append(
-                [InlineKeyboardButton(text="𝐍𝐎 𝐌𝐎𝐑𝐄 𝐏𝐀𝐆𝐄𝐒 𝐀𝐕𝐀𝐈𝐋𝐀𝐁𝐋𝐄",callback_data="pages")]
-            )
+            btn = [
+                [
+                    types.InlineKeyboardButton(
+                        f"↓↓ {movie}  ↓↓", url=f"https://telegram.me/{temp.U_NAME}?start==filter{key}"
+                    )
+                ],[
+                    types.InlineKeyboardButton(
+                        f"📥  Download 📥", url=f"https://telegram.me/{temp.U_NAME}?start=filter{key}"
+                    )
+                ]
+            ] 
+
         try:
             await query.edit_message_reply_markup(
                 reply_markup=InlineKeyboardMarkup(btn)
@@ -555,7 +565,8 @@ async def language_check(bot, query):
         await query.answer()
     else:
         return await query.answer(f"Sorry, သင့်အတွက်  ဖိုင်တွေ ရှာမတွေ့ပါဘူး။ တစ်ခြားတစ်ခုကို နှိပ်ကြည့်ပါ။.", show_alert=True)
-    
+
+
 @Client.on_callback_query(filters.regex(r"^select_lang"))
 async def select_language(bot, query):
     _, userid = query.data.split("#")
