@@ -547,11 +547,11 @@ async def language_check(bot, query):
             btn = [
                 [
                     InlineKeyboardButton(
-                        f"↓↓ {movie}  ↓↓", url=f"https://telegram.me/{temp.U_NAME}?start==filter{key}"
+                        f"↓↓ {movie}  ↓↓", url=f"https://telegram.me/{temp.U_NAME}?start==filter{movie}"
                     )
                 ],[
                     InlineKeyboardButton(
-                        f"📥  Download 📥", url=f"https://telegram.me/{temp.U_NAME}?start=filter{key}"
+                        f"📥  Download 📥", url=f"https://telegram.me/{temp.U_NAME}?start=filter{movie}"
                     )
                 ]
             ] 
