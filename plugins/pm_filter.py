@@ -1756,8 +1756,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
 async def auto_filter(client, msg, spoll=False):
     reqstr1 = msg.from_user.id if msg.from_user else 0
+
     reqstr = await client.get_users(reqstr1)
     files = []
+    
     if not spoll:
         message = msg
         settings = await get_settings(message.chat.id)
@@ -1791,7 +1793,8 @@ async def auto_filter(client, msg, spoll=False):
         await save_group_settings(message.chat.id, 'is_shortlink', False)
         ENABLE_SHORTLINK = False
     pre = 'filep' if settings['file_secure'] else 'file'
-
+    key = f"{message.chat.id}-{message.id}"
+    req = message.from_user.id if message.from_user else 0
     btn = [[
         InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။  !", callback_data=f"select_lang#{message.from_user.id}")
     ]]
@@ -1980,6 +1983,7 @@ async def auto_filter2(client, msg, spoll=False):
     else:
         await save_group_settings(message.chat.id, 'is_shortlink', False)
         ENABLE_SHORTLINK = False
+
     pre = 'filep' if settings['file_secure'] else 'file'
     if ENABLE_SHORTLINK and settings["button"]:
         btn = [
