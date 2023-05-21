@@ -1790,7 +1790,7 @@ async def auto_filter(client, msg, spoll=False):
     else:
         await save_group_settings(message.chat.id, 'is_shortlink', False)
         ENABLE_SHORTLINK = False
-    imdb = await get_poster(search, file=files_a.file_name) if settings["imdb"] else None
+    #imdb = await get_poster(search, file=files_a.file_name) if settings["imdb"] else None
 
     if files:
         temp.KEYWORD[message.from_user.id] = search
