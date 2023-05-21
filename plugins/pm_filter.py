@@ -1792,11 +1792,11 @@ async def auto_filter(client, msg, spoll=False):
         ENABLE_SHORTLINK = False
     imdb = await get_poster(search, file=files_a.file_name) if settings["imdb"] else None
 
-    if files_a:
+    if files:
         temp.KEYWORD[message.from_user.id] = search
         settings = await get_settings(message.chat.id)
         if settings["IMDB"]:  # type: ignore
-           imdb = await get_poster(search, file=(files_a[0])["file_name"])
+           imdb = await get_poster(search, file=(files[0])["file_name"])
         else:
             imdb = {}
         
