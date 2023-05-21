@@ -1809,8 +1809,8 @@ async def auto_filter(client, msg, spoll=False):
         btn2 = [
             [
                 InlineKeyboardButton(
-                    text=f"{file2.file_name}  [{get_size(file2.file_size)}]",
-                    callback_data=f'{pre}#{file2.file_id}',
+                    text=f"{file.file_name}  [{get_size(file2.file_size)}]",
+                    callback_data=f'{pre}#{file.file_id}',
                 )
                 for file2 in files
             ]
@@ -1819,9 +1819,10 @@ async def auto_filter(client, msg, spoll=False):
         btn2 = []
 
     if files_a:
-        imdb_file = files_a[0]
+        imdb = await get_poster(search, file=(files_a[0]).file_name) if settings["imdb"] else None
     else:
-        imdb_file = files_b[0]
+        imdb = await get_poster(search, file=(files_b[0]).file_name) if settings["imdb"] else None
+
 
     imdb = await get_poster(search, file=imdb_file.file_name) if settings["imdb"] else None
 
