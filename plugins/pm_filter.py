@@ -1752,11 +1752,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
     await query.answer(MSG_ALRT)
 
     
-import re
-import math
-import asyncio
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from aiogram.utils.exceptions import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty
+
 
 async def auto_filter(client, msg, spoll=False):
     reqstr1 = msg.from_user.id if msg.from_user else 0
