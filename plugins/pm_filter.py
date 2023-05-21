@@ -1794,7 +1794,7 @@ async def auto_filter(client, msg, spoll=False):
     key = f"{message.chat.id}-{message.id}"
     req = message.from_user.id if message.from_user else 0
 
-    # Filter A
+
     if files_a:
         btn = [
             [
@@ -1809,8 +1809,8 @@ async def auto_filter(client, msg, spoll=False):
         btn2 = [
             [
                 InlineKeyboardButton(
-                    text=f"{file.file_name}  [{get_size(file2.file_size)}]",
-                    callback_data=f'{pre}#{file.file_id}',
+                    text=f"{file2.file_name}  [{get_size(file2.file_size)}]",
+                    callback_data=f'{pre}#{file2.file_id}',
                 )
                 for file2 in files
             ]
@@ -1818,13 +1818,16 @@ async def auto_filter(client, msg, spoll=False):
     else:
         btn2 = []
 
+    # Choose the appropriate file for IMDb
     if files_a:
-        imdb = await get_poster(search, file=(files_a[0]).file_name) if settings["imdb"] else None
+        imdb_file = files_a[0]
+    elif files_b:
+        imdb_file = files_b[0]
     else:
-        imdb = await get_poster(search, file=(files_b[0]).file_name) if settings["imdb"] else None
-
+        imdb_file = None
 
     imdb = await get_poster(search, file=imdb_file.file_name) if settings["imdb"] else None
+
 
 
 
