@@ -1790,6 +1790,29 @@ async def auto_filter(client, msg, spoll=False):
     else:
         await save_group_settings(message.chat.id, 'is_shortlink', False)
         ENABLE_SHORTLINK = False
+    imdb = await get_poster(search, file=files_a.file_name) if settings["imdb"] else None
+
+    if files_a:
+        temp.KEYWORD[message.from_user.id] = search
+        settings = await get_settings(message.chat.id)
+        if settings["IMDB"]:  # type: ignore
+           imdb = await get_poster(search, file=(files_a[0])["file_name"])
+        else:
+            imdb = {}
+        
+        
+    elif files_b:
+        temp.KEYWORD[message.from_user.id] = search
+        settings = await get_settings(message.chat.id)
+        if settings["IMDB"]:  # type: ignore
+            imdb = await get_poster(search, file=(files_b[0])["file_name"])
+        else:
+           imdb = {}
+        
+        
+    else:
+        return
+
     pre = 'filep' if settings['file_secure'] else 'file'
     key = f"{message.chat.id}-{message.id}"
     req = message.from_user.id if message.from_user else 0
@@ -1816,16 +1839,8 @@ async def auto_filter(client, msg, spoll=False):
         ]
     else:
         btn2 = []
-
-    # Choose the appropriate file for IMDb
-    if files:
-        imdb_file = files[0]
-    elif files_b:
-        imdb_file = files_b[0]
-    else:
-        imdb_file = None
-
-    imdb = await get_poster(search, file=imdb_file.file_name) if settings["imdb"] else None
+    btn_combined = btn + btn2
+    
 
     TEMPLATE = settings['template']
     if imdb:
@@ -1862,9 +1877,8 @@ async def auto_filter(client, msg, spoll=False):
         )
     else:
         cap = f"<b>Hᴇʏ {message.from_user.mention}, Hᴇʀᴇ ɪs Wʜᴀᴛ I Fᴏᴜɴᴅ Iɴ Mʏ Dᴀᴛᴀʙᴀsᴇ Fᴏʀ Yᴏᴜʀ Qᴜᴇʀʏ {search}.</b>"
+ 
     
-    # Combine the buttons
-    btn_combined = btn + btn2
     
     if imdb and imdb.get('poster'):
         try:
