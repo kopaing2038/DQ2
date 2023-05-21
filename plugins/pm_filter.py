@@ -1818,14 +1818,13 @@ async def auto_filter(client, msg, spoll=False):
     else:
         btn2 = []
 
-
-    if settings["imdb"]:
     if files_a:
-        imdb = await get_poster(search, file=(files_a[0]).file_name)
-    elif files_b:
-        imdb = await get_poster(search, file=(files_b[0]).file_name)
+        imdb_file = files_a[0]
     else:
-        imdb = None
+        imdb_file = files_b[0]
+
+    imdb = await get_poster(search, file=imdb_file.file_name) if settings["imdb"] else None
+
 
 
     TEMPLATE = settings['template']
