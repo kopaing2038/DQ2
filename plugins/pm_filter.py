@@ -1784,7 +1784,7 @@ async def auto_filter(client, msg, spoll=False):
         settings = await get_settings(message.chat.id)
 
     temp.SEND_ALL_TEMP[message.from_user.id] = files
-    temp.KEYWORD[message.from_user.id] = search
+    #temp.KEYWORD[message.from_user.id] = search
     if 'is_shortlink' in settings.keys():
         ENABLE_SHORTLINK = settings['is_shortlink']
     else:
