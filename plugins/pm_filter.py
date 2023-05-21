@@ -1753,8 +1753,11 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
 async def auto_filter(client, msg, spoll=False):
     reqstr1 = msg.from_user.id if msg.from_user else 0
+    req = 0  # Default value for req
     reqstr = await client.get_users(reqstr1)
-    files = [] 
+    files = []  # Initialize files as an empty list
+    # Rest of your code...
+
     if not spoll:
         message = msg
         settings = await get_settings(message.chat.id)
