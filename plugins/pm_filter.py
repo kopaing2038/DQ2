@@ -1753,12 +1753,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     
 
-import re
-import asyncio
-from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from pyrogram.errors import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty
-
 async def auto_filter(client, msg, spoll=False):
     reqstr1 = msg.from_user.id if msg.from_user else 0
     reqstr = await client.get_users(reqstr1)
@@ -1824,7 +1818,9 @@ async def auto_filter(client, msg, spoll=False):
     else:
         btn2 = []
 
-    imdb = await get_poster(search, file=(files_a[0]).file_name) if settings["imdb"] and files_b else None
+    imdb = await get_poster(search, file=(files_a[0]).file_name) if settings["imdb"] and files_a else \
+       await get_poster(search, file=(files_b[0]).file_name) if settings["imdb"] and files_b else None
+
 
     TEMPLATE = settings['template']
     if imdb:
