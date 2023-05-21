@@ -1767,9 +1767,9 @@ async def auto_filter(client, msg, spoll=False):
             return
         if len(message.text) < 100:
             search = message.text
-            files_a, offset, total_results = await get_search_results(message.chat.id, search.lower(), offset=0, filter=True)
+            files, offset, total_results = await get_search_results(message.chat.id, search.lower(), offset=0, filter=True)
             files_b, offset, total_results = await get_search_results2(message.chat.id, search.lower(), offset=0, filter=True)
-            if not files_a and not files_b:
+            if not files and not files_b:
                 if settings["spell_check"]:
                     return await advantage_spell_chok(client, msg)
                 else:
@@ -1795,7 +1795,7 @@ async def auto_filter(client, msg, spoll=False):
     req = message.from_user.id if message.from_user else 0
 
 
-    if files_a:
+    if files:
         btn = [
             [
                 InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။  !", callback_data=f"select_lang#{message.from_user.id}")
@@ -1809,8 +1809,7 @@ async def auto_filter(client, msg, spoll=False):
         btn2 = [
             [
                 InlineKeyboardButton(
-                    text=f"{file2.file_name}  [{get_size(file2.file_size)}]",
-                    callback_data=f'{pre}#{file2.file_id}',
+                   text=f"[{get_size(file2.file_size)}] {file2.file_name}", url=await get_shortlink(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file2.file_id}")
                 )
                 for file2 in files
             ]
@@ -1819,8 +1818,8 @@ async def auto_filter(client, msg, spoll=False):
         btn2 = []
 
     # Choose the appropriate file for IMDb
-    if files_a:
-        imdb_file = files_a[0]
+    if files:
+        imdb_file = files[0]
     elif files_b:
         imdb_file = files_b[0]
     else:
