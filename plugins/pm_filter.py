@@ -1751,12 +1751,15 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
     await query.answer(MSG_ALRT)
 
+
 async def auto_filter(client, msg, spoll=False):
     reqstr1 = msg.from_user.id if msg.from_user else 0
     req = 0  # Default value for req
+    key = 0  # Default value for key
     reqstr = await client.get_users(reqstr1)
     files = []  # Initialize files as an empty list
     # Rest of your code...
+
 
     if not spoll:
         message = msg
