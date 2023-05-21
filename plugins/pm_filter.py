@@ -1753,7 +1753,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     
 
-
 async def auto_filter(client, msg, spoll=False):
     reqstr1 = msg.from_user.id if msg.from_user else 0
 
@@ -1795,22 +1794,32 @@ async def auto_filter(client, msg, spoll=False):
     pre = 'filep' if settings['file_secure'] else 'file'
     key = f"{message.chat.id}-{message.id}"
     req = message.from_user.id if message.from_user else 0
-    btn = [[
-        InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။  !", callback_data=f"select_lang#{message.from_user.id}")
-    ]]
 
-    btn2 = [[
-            InlineKeyboardButton(
-                text=f"{file2.file_name}  [{get_size(file2.file_size)}]",
-                callback_data=f'{pre}#{file2.file_id}',
-            )
-            for file2 in files
+    # Filter A
+    if files_a:
+        btn = [
+            [
+                InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။  !", callback_data=f"select_lang#{message.from_user.id}")
+            ]
         ]
-    ]
+    else:
+        btn = []
 
-    btn_combined = btn + btn2
+    # Filter B
+    if files_b:
+        btn2 = [
+            [
+                InlineKeyboardButton(
+                    text=f"{file2.file_name}  [{get_size(file2.file_size)}]",
+                    callback_data=f'{pre}#{file2.file_id}',
+                )
+                for file2 in files
+            ]
+        ]
+    else:
+        btn2 = []
 
-    imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] and files else None
+    imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] else None
 
     TEMPLATE = settings['template']
     if imdb:
@@ -1847,7 +1856,10 @@ async def auto_filter(client, msg, spoll=False):
         )
     else:
         cap = f"<b>Hᴇʏ {message.from_user.mention}, Hᴇʀᴇ ɪs Wʜᴀᴛ I Fᴏᴜɴᴅ Iɴ Mʏ Dᴀᴛᴀʙᴀsᴇ Fᴏʀ Yᴏᴜʀ Qᴜᴇʀʏ {search}.</b>"
-
+    
+    # Combine the buttons
+    btn_combined = btn + btn2
+    
     if imdb and imdb.get('poster'):
         try:
             hehe = await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn_combined))
@@ -1900,6 +1912,7 @@ async def auto_filter(client, msg, spoll=False):
             await asyncio.sleep(600)
             await fuk.delete()
             await message.delete()
+    
     if spoll:
         await msg.message.delete()
 
