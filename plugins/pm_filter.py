@@ -1795,7 +1795,7 @@ async def auto_filter(client, msg, spoll=False):
     if files:
         temp.KEYWORD[message.from_user.id] = search
         settings = await get_settings(message.chat.id)
-        if settings["IMDB"]:  # type: ignore
+        if settings["imdb"]:  # type: ignore
            imdb = await get_poster(search, file=(files[0])["file_name"])
         else:
             imdb = {}
@@ -1804,7 +1804,7 @@ async def auto_filter(client, msg, spoll=False):
     elif files_b:
         temp.KEYWORD[message.from_user.id] = search
         settings = await get_settings(message.chat.id)
-        if settings["IMDB"]:  # type: ignore
+        if settings["imdb"]:  # type: ignore
             imdb = await get_poster(search, file=(files_b[0])["file_name"])
         else:
            imdb = {}
