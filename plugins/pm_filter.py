@@ -1824,8 +1824,8 @@ async def auto_filter(client, msg, spoll=False):
         imdb = await get_poster(search, file=(files_a[0]).file_name)
     elif files_b:
         imdb = await get_poster(search, file=(files_b[0]).file_name)
-else:
-    imdb = None
+    else:
+        imdb = None
 
 
     TEMPLATE = settings['template']
