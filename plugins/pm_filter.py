@@ -1881,13 +1881,10 @@ async def auto_filter(client, msg, spoll=False):
         )
     else:
         cap = f"<b>Hᴇʏ {message.from_user.mention}, Hᴇʀᴇ ɪs Wʜᴀᴛ I Fᴏᴜɴᴅ Iɴ Mʏ Dᴀᴛᴀʙᴀsᴇ Fᴏʀ Yᴏᴜʀ Qᴜᴇʀʏ {search}.</b>"
+    btn_combined = btn + btn2
     if imdb and imdb.get('poster'):
         try:
-            if len(btn2) > 0:
-                btn_combined = btn + btn2
-                hehe = await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn_combined))
-            else:
-                hehe = await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024])
+            hehe = await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn_combined ))
             try:
                 if settings['auto_delete']:
                     await asyncio.sleep(600)
@@ -1901,11 +1898,7 @@ async def auto_filter(client, msg, spoll=False):
         except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
             pic = imdb.get('poster')
             poster = pic.replace('.jpg', "._V1_UX360.jpg")
-            if len(btn2) > 0:
-                btn_combined = btn + btn2
-                hmm = await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn_combined))
-            else:
-                hmm = await message.reply_photo(photo=poster, caption=cap[:1024])
+            hmm = await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn_combined ))
             try:
                 if settings['auto_delete']:
                     await asyncio.sleep(600)
@@ -1918,11 +1911,7 @@ async def auto_filter(client, msg, spoll=False):
                 await message.delete()
         except Exception as e:
             logger.exception(e)
-            if len(btn2) > 0:
-                btn_combined = btn + btn2
-                fek = await message.reply_photo(photo=NOR_IMG, caption=cap, reply_markup=InlineKeyboardMarkup(btn_combined))
-            else:
-                fek = await message.reply_photo(photo=NOR_IMG, caption=cap)
+            fek = await message.reply_photo(photo=NOR_IMG, caption=cap, reply_markup=InlineKeyboardMarkup(btn_combined ))
             try:
                 if settings['auto_delete']:
                     await asyncio.sleep(600)
@@ -1934,11 +1923,7 @@ async def auto_filter(client, msg, spoll=False):
                 await fek.delete()
                 await message.delete()
     else:
-        if len(btn2) > 0:
-            btn_combined = btn + btn2
-            fuk = await message.reply_photo(photo=NOR_IMG, caption=cap, reply_markup=InlineKeyboardMarkup(btn_combined))
-        else:
-            fuk = await message.reply_photo(photo=NOR_IMG, caption=cap)
+        fuk = await message.reply_photo(photo=NOR_IMG, caption=cap, reply_markup=InlineKeyboardMarkup(btn_combined ))
         try:
             if settings['auto_delete']:
                 await asyncio.sleep(600)
@@ -1951,7 +1936,6 @@ async def auto_filter(client, msg, spoll=False):
             await message.delete()
     if spoll:
         await msg.message.delete()
-
 async def auto_filter2(client, msg, spoll=False):
     reqstr1 = msg.from_user.id if msg.from_user else 0
     reqstr = await client.get_users(reqstr1)
