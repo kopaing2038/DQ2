@@ -1753,9 +1753,14 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     
 
+import re
+import asyncio
+from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from pyrogram.errors import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty
+
 async def auto_filter(client, msg, spoll=False):
     reqstr1 = msg.from_user.id if msg.from_user else 0
-
     reqstr = await client.get_users(reqstr1)
     files = []
     
@@ -1769,7 +1774,7 @@ async def auto_filter(client, msg, spoll=False):
         if len(message.text) < 100:
             search = message.text
             files_a, offset, total_results = await get_search_results(message.chat.id, search.lower(), offset=0, filter=True)
-            files_b, offset, total_results = await get_search_results2(message.chat.id, search.lower(), offset=0, filter=True)  # Added line
+            files_b, offset, total_results = await get_search_results2(message.chat.id, search.lower(), offset=0, filter=True)
             if not files_a and not files_b:
                 if settings["spell_check"]:
                     return await advantage_spell_chok(client, msg)
@@ -1780,7 +1785,7 @@ async def auto_filter(client, msg, spoll=False):
         else:
             return
     else:
-        message = msg.message.reply_to_message  # msg will be callback query
+        message = msg.message.reply_to_message
         search, files, offset, total_results = spoll
         settings = await get_settings(message.chat.id)
 
@@ -1819,7 +1824,7 @@ async def auto_filter(client, msg, spoll=False):
     else:
         btn2 = []
 
-    imdb = await get_poster(search, file=(files_b[0]).file_name) if settings["imdb"] and files_b else None
+    imdb = await get_poster(search, file=(files_a[0]).file_name) if settings["imdb"] and files_b else None
 
     TEMPLATE = settings['template']
     if imdb:
@@ -1862,7 +1867,11 @@ async def auto_filter(client, msg, spoll=False):
     
     if imdb and imdb.get('poster'):
         try:
-            hehe = await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn_combined))
+            hehe = await message.reply_photo(
+                photo=imdb.get('poster'),
+                caption=cap[:1024],
+                reply_markup=InlineKeyboardMarkup(inline_keyboard=btn_combined)
+            )
             try:
                 if settings['auto_delete']:
                     await asyncio.sleep(600)
@@ -1876,7 +1885,11 @@ async def auto_filter(client, msg, spoll=False):
         except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
             pic = imdb.get('poster')
             poster = pic.replace('.jpg', "._V1_UX360.jpg")
-            hmm = await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn_combined))
+            hmm = await message.reply_photo(
+                photo=poster,
+                caption=cap[:1024],
+                reply_markup=InlineKeyboardMarkup(inline_keyboard=btn_combined)
+            )
             try:
                 if settings['auto_delete']:
                     await asyncio.sleep(600)
@@ -1889,7 +1902,11 @@ async def auto_filter(client, msg, spoll=False):
                 await message.delete()
         except Exception as e:
             logger.exception(e)
-            fek = await message.reply_photo(photo=NOR_IMG, caption=cap, reply_markup=InlineKeyboardMarkup(btn_combined))
+            fek = await message.reply_photo(
+                photo=NOR_IMG,
+                caption=cap,
+                reply_markup=InlineKeyboardMarkup(inline_keyboard=btn_combined)
+            )
             try:
                 if settings['auto_delete']:
                     await asyncio.sleep(600)
@@ -1901,7 +1918,11 @@ async def auto_filter(client, msg, spoll=False):
                 await fek.delete()
                 await message.delete()
     else:
-        fuk = await message.reply_photo(photo=NOR_IMG, caption=cap, reply_markup=InlineKeyboardMarkup(btn_combined))
+        fuk = await message.reply_photo(
+            photo=NOR_IMG,
+            caption=cap,
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=btn_combined)
+        )
         try:
             if settings['auto_delete']:
                 await asyncio.sleep(600)
@@ -1915,6 +1936,7 @@ async def auto_filter(client, msg, spoll=False):
     
     if spoll:
         await msg.message.delete()
+
 
 
 
