@@ -1754,13 +1754,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
 async def auto_filter(client, msg, spoll=False):
     reqstr1 = msg.from_user.id if msg.from_user else 0
-    req = 0  # Default value for req
-    key = 0  # Default value for key
     reqstr = await client.get_users(reqstr1)
-    files = []  # Initialize files as an empty list
-    # Rest of your code...
-
-
     if not spoll:
         message = msg
         settings = await get_settings(message.chat.id)
@@ -1771,8 +1765,18 @@ async def auto_filter(client, msg, spoll=False):
         if len(message.text) < 100:
             search = message.text
             files_a, offset, total_results = await get_search_results(message.chat.id, search.lower(), offset=0, filter=True)
+            btn = [[
+                InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။  !", callback_data=f"select_lang#{message.from_user.id}")
+            ]]
+            if not files_a:
+                if settings["spell_check"]:
+                    return await advantage_spell_chok(client, msg)
+                else:
+                    if NO_RESULTS_MSG:
+                        await client.send_message(chat_id=LOG_CHANNEL, text=(script.NORSLTS.format(reqstr.id, reqstr.mention, search)))
+                    return
             files_b, offset, total_results = await get_search_results2(message.chat.id, search.lower(), offset=0, filter=True)  # Added line
-            if not files_a and not files_b:
+            if not files_b:
                 if settings["spell_check"]:
                     return await advantage_spell_chok(client, msg)
                 else:
@@ -1796,34 +1800,18 @@ async def auto_filter(client, msg, spoll=False):
     pre = 'filep' if settings['file_secure'] else 'file'
 
     btn2 = [[
-        InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။  !", callback_data=f"select_lang#{message.from_user.id}")
-    ]]
-
-    btn = [
         [
-            InlineKeyboardButton(f'ᴍᴏᴠɪᴇ', 'minfo'),
-            InlineKeyboardButton(f'ꜱᴇʀɪᴇꜱ', 'sinfo')
-        ],
-        *[
-            [
-                InlineKeyboardButton(
-                    text=f"{file2.file_name}",
-                    callback_data=f'{pre}#{file2.file_id}',
-                ),
-                InlineKeyboardButton(
-                    text=f"{get_size(file2.file_size)}",
-                    callback_data=f'{pre}#{file2.file_id}',
-                ),
-            ]
-            for file2 in files
+            InlineKeyboardButton(
+                text=f"{file2.file_name}  [{get_size(file2.file_size)}]",
+                callback_data=f'{pre}#{file2.file_id}',
+            )
         ]
-    ]
-
-    btn_combined = btn + btn2
+        for file2 in files
+    ]]
 
     try:
         if settings['max_btn']:
-            btn_combined.append(
+            btn2.append(
                 [
                     InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
                     InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}",callback_data="pages"),
@@ -1831,7 +1819,7 @@ async def auto_filter(client, msg, spoll=False):
                 ]
             )
         else:
-            btn_combined.append(
+            btn2.append(
                 [
                     InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
                     InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/int(MAX_B_TN))}",callback_data="pages"),
@@ -1840,7 +1828,7 @@ async def auto_filter(client, msg, spoll=False):
             )
     except KeyError:
         await save_group_settings(message.chat.id, 'max_btn', True)
-        btn_combined.append(
+        btn2.append(
             [
                 InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
                 InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}",callback_data="pages"),
@@ -1853,7 +1841,7 @@ async def auto_filter(client, msg, spoll=False):
         BUTTONS[key] = search
         req = message.from_user.id if message.from_user else 0
     else:
-        btn_combined.append(
+        btn2.append(
             [InlineKeyboardButton(text="𝐍𝐎 𝐌𝐎𝐑𝐄 𝐏𝐀𝐆𝐄𝐒 𝐀𝐕𝐀𝐈𝐋𝐀𝐁𝐋𝐄",callback_data="pages")]
         )
 
@@ -1893,6 +1881,7 @@ async def auto_filter(client, msg, spoll=False):
         )
     else:
         cap = f"<b>Hᴇʏ {message.from_user.mention}, Hᴇʀᴇ ɪs Wʜᴀᴛ I Fᴏᴜɴᴅ Iɴ Mʏ Dᴀᴛᴀʙᴀsᴇ Fᴏʀ Yᴏᴜʀ Qᴜᴇʀʏ {search}.</b>"
+
     if imdb and imdb.get('poster'):
         try:
             hehe = await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn_combined))
@@ -2073,6 +2062,7 @@ async def auto_filter2(client, msg, spoll=False):
         btn.append(
             [InlineKeyboardButton(text="𝐍𝐎 𝐌𝐎𝐑𝐄 𝐏𝐀𝐆𝐄𝐒 𝐀𝐕𝐀𝐈𝐋𝐀𝐁𝐋𝐄",callback_data="pages")]
         )
+    btn_combined = btn + btn2 
     imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] else None
     TEMPLATE = settings['template']
     if imdb:
@@ -2111,7 +2101,7 @@ async def auto_filter2(client, msg, spoll=False):
         cap = f"<b>Hᴇʏ {message.from_user.mention}, Hᴇʀᴇ ɪs Wʜᴀᴛ I Fᴏᴜɴᴅ Iɴ Mʏ Dᴀᴛᴀʙᴀsᴇ Fᴏʀ Yᴏᴜʀ Qᴜᴇʀʏ {search}.</b>"
     if imdb and imdb.get('poster'):
         try:
-            hehe = await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
+            hehe = await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn_combined))
             try:
                 if settings['auto_delete']:
                     await asyncio.sleep(600)
@@ -2125,7 +2115,7 @@ async def auto_filter2(client, msg, spoll=False):
         except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
             pic = imdb.get('poster')
             poster = pic.replace('.jpg', "._V1_UX360.jpg")
-            hmm = await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
+            hmm = await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn_combined))
             try:
                 if settings['auto_delete']:
                     await asyncio.sleep(600)
@@ -2138,7 +2128,7 @@ async def auto_filter2(client, msg, spoll=False):
                 await message.delete()
         except Exception as e:
             logger.exception(e)
-            fek = await message.reply_photo(photo=NOR_IMG, caption=cap, reply_markup=InlineKeyboardMarkup(btn))
+            fek = await message.reply_photo(photo=NOR_IMG, caption=cap, reply_markup=InlineKeyboardMarkup(btn_combined))
             try:
                 if settings['auto_delete']:
                     await asyncio.sleep(600)
@@ -2150,7 +2140,7 @@ async def auto_filter2(client, msg, spoll=False):
                 await fek.delete()
                 await message.delete()
     else:
-        fuk = await message.reply_photo(photo=NOR_IMG, caption=cap, reply_markup=InlineKeyboardMarkup(btn))
+        fuk = await message.reply_photo(photo=NOR_IMG, caption=cap, reply_markup=InlineKeyboardMarkup(btn_combined))
         try:
             if settings['auto_delete']:
                 await asyncio.sleep(600)
