@@ -71,11 +71,42 @@ async def pm_text(bot, message):
     user_id = message.from_user.id
     if content.startswith("/") or content.startswith("#"): return  # ignore commands and hashtags
     if user_id in ADMINS: return # ignore admins
-    await message.reply_text("<b>Yᴏᴜʀ ᴍᴇssᴀɢᴇ ʜᴀs ʙᴇᴇɴ sᴇɴᴛ ᴛᴏ ᴍʏ ᴍᴏᴅᴇʀᴀᴛᴏʀs !</b>")
+    #await message.reply_text("<b>Yᴏᴜʀ ᴍᴇssᴀɢᴇ ʜᴀs ʙᴇᴇɴ sᴇɴᴛ ᴛᴏ ᴍʏ ᴍᴏᴅᴇʀᴀᴛᴏʀs !</b>")
     await bot.send_message(
         chat_id=LOG_CHANNEL,
         text=f"<b>#𝐏𝐌_𝐌𝐒𝐆\n\nNᴀᴍᴇ : {user}\n\nID : {user_id}\n\nMᴇssᴀɢᴇ : {content}</b>"
     )
+    
+    btn = [
+        [InlineKeyboardButton("Group 1", url="https://t.me/MKS_REQUESTGROUP"),
+	InlineKeyboardButton("Group 2", url="https://t.me/+z5lhEpxP5Go4MWM1")],
+        [InlineKeyboardButton("All Link ", url="https://t.me/Movie_Zone_KP/3")],
+    ]
+    btn2 = [
+        [InlineKeyboardButton("Group 3", url="https://t.me/Movie_Group_MMSUB"),
+	InlineKeyboardButton("Group 4", url="https://t.me/+cHMLAeatqKdlNGVl")],
+        [InlineKeyboardButton("All Link ", url="https://t.me/Movie_Zone_KP/3")],
+    ]
+    
+    bt = [ 
+        {"caption": f"""Yᴏᴜʀ ᴍᴇssᴀɢᴇ ʜᴀs ʙᴇᴇɴ sᴇɴᴛ ᴛᴏ ᴍʏ ᴍᴏᴅᴇʀᴀᴛᴏʀs!
+===========================
+Can't find movies here. Search in the group given below    
+@Movie_Group_MMSUB""", 
+         "reply_markup": InlineKeyboardMarkup(btn)},
+        {"caption": f"""သင့်စာကို မင်မင်ထံ ပေးပို့လိုက်ပါပြီး။ !
+	
+===========================
+ဤနေရာတွေ ဇာတ်ကားများရှာမရပါ အောက်တွင်ပေးထားသော Group ထဲတွင်ရှာပါ 
+@MKS_REQUESTGROUP""",
+         "reply_markup": InlineKeyboardMarkup(btn2)},
+    ]
+
+    ad = random.choice(bt)
+    caption = ad["caption"]
+    btnn = ad["reply_markup"]    
+    await message.reply_text(text=caption, reply_markup=btnn)
+
 
 @Client.on_callback_query(filters.regex(r"^next"))
 async def next_page(bot, query):
