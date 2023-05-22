@@ -1758,7 +1758,6 @@ async def auto_filter(client, msg, spoll=False):
     reqstr1 = msg.from_user.id if msg.from_user else 0
     reqstr = await client.get_users(reqstr1)
     files = []
-    files_b = []  # Add this line to declare files_b as an empty list
     btn_b = []
     
     if not spoll:
@@ -1770,11 +1769,12 @@ async def auto_filter(client, msg, spoll=False):
             return
         if len(message.text) < 100:
             search = message.text
-            files_a, offset, total_results = await get_search_results(message.chat.id ,search.lower(), offset=0, filter=True)            
+            files_a, offset, total_results = await get_search_results(message.chat.id ,search.lower(), offset=0, filter=True)
+            files_b = []  # Declare files_b as an empty list
             if files_a:
                 search = message.text
                 files_b, offset, total_results = await get_search_results2(message.chat.id ,search.lower(), offset=0, filter=True)
-                if not files_b or files_a:
+                if not files_b and not files_a:
                     return
         else:
             return
