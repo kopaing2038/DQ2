@@ -1758,6 +1758,7 @@ async def auto_filter(client, msg, spoll=False):
     reqstr1 = msg.from_user.id if msg.from_user else 0
     reqstr = await client.get_users(reqstr1)
     files = []
+    files_b = []  # Add this line to declare files_b as an empty list
     btn_b = []
     
     if not spoll:
@@ -1868,7 +1869,6 @@ async def auto_filter(client, msg, spoll=False):
         return
 
     TEMPLATE = settings['template']
-
     if imdb:
         cap = TEMPLATE.format(
             query=search,
