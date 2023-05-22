@@ -1753,6 +1753,21 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     
 
+async def parse_link(chat_id: int, msg_id: int) -> str:
+    username = temp.USERNAMES.get(chat_id)
+    if username is None:
+        try:
+            chat = await bot.get_chat(chat_id)
+        except Exception as e:
+            log.exception(e)
+            username = ""
+        else:
+            username = chat.username if chat.username else ""  # type: ignore
+        temp.USERNAMES[chat_id] = username
+    if username:
+        return f"https://t.me/{username}/{msg_id}"
+    return f"https://t.me/c/{(str(chat_id)).replace('-100', '')}/{msg_id}"
+
 
 async def auto_filter(client, msg, spoll=False):
     reqstr1 = msg.from_user.id if msg.from_user else 0
@@ -1809,7 +1824,7 @@ async def auto_filter(client, msg, spoll=False):
             btn_b = [
                 [
                     InlineKeyboardButton(
-                        text=f"[{get_size(file2.file_size)}] {file2.file_name}", url=await get_shortlink(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file2.file_id}")
+                        text=f"{file2.file_name} [{get_size(file2.file_size)}] ", url=await parse_link(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file2.file_id}")
                     ),
                 ]
                 for file2 in files_b
@@ -1819,11 +1834,11 @@ async def auto_filter(client, msg, spoll=False):
                 [
                     InlineKeyboardButton(
                         text=f"{file2.file_name}",
-                        url=await get_shortlink(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file2.file_id}")
+                        url=await parse_link(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file2.file_id}")
                     ),
                     InlineKeyboardButton(
                         text=f"{get_size(file2.file_size)}",
-                        url=await get_shortlink(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file2.file_id}")
+                        url=await parse_link(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file2.file_id}")
                     ),
                 ]
                 for file2 in files_b
@@ -1832,7 +1847,7 @@ async def auto_filter(client, msg, spoll=False):
             btn_b = [
                 [
                     InlineKeyboardButton(
-                        text=f"[{get_size(file2.file_size)}] {file2.file_name}", callback_data=f'{pre}#{file2.file_id}'
+                        text=f"{file2.file_name} [{get_size(file2.file_size)}]", callback_data=f'{pre}#{file2.file_id}'
                     ),
                 ]
                 for file2 in files_b
@@ -1870,7 +1885,7 @@ async def auto_filter(client, msg, spoll=False):
         
     else:
         return
-
+    
     TEMPLATE = settings['template']
     if imdb:
         cap = TEMPLATE.format(
