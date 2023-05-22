@@ -1757,23 +1757,20 @@ async def auto_filter(client, msg, spoll=False):
     reqstr1 = msg.from_user.id if msg.from_user else 0
     reqstr = await client.get_users(reqstr1)
     files = []
-
+    
     if not spoll:
         message = msg
         settings = await get_settings(message.chat.id)
-
         if message.text.startswith("/"):
             return  # ignore commands
-
-        if re.findall(r"(^\/|^,|^!|^\.|^[\U0001F600-\U000E007F]).*", message.text):
+        if re.findall("((^\/|^,|^!|^\.|^[\U0001F600-\U000E007F]).*)", message.text):
             return
-
         if len(message.text) < 100:
             search = message.text
             files_a, offset, total_results = await get_search_results(message.chat.id, search.lower(), offset=0, filter=True)
             files_b, offset, total_results = await get_search_results2(message.chat.id, search.lower(), offset=0, filter=True)
 
-            if not files_b:
+            if not files_a:
                 if settings["spell_check"]:
                     return await advantage_spell_check(client, msg)
                 else:
