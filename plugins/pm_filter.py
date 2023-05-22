@@ -1767,10 +1767,10 @@ async def auto_filter(client, msg, spoll=False):
             return
         if len(message.text) < 100:
             search = message.text
-            files_a, offset, total_results = await get_search_results(message.chat.id, search.lower(), offset=0, filter=True)
+            files, offset, total_results = await get_search_results(message.chat.id, search.lower(), offset=0, filter=True)
             files_b, offset, total_results = await get_search_results2(message.chat.id, search.lower(), offset=0, filter=True)
 
-            if not files_a:
+            if not files:
                 if settings["spell_check"]:
                     return await advantage_spell_check(client, msg)
                 else:
@@ -1781,7 +1781,7 @@ async def auto_filter(client, msg, spoll=False):
                 return
     else:
         message = msg.message.reply_to_message  # msg will be callback query
-        search, files_a, offset, total_results = spoll
+        search, files, offset, total_results = spoll
         settings = await get_settings(message.chat.id)
 
     temp.SEND_ALL_TEMP[message.from_user.id] = files
@@ -1793,7 +1793,7 @@ async def auto_filter(client, msg, spoll=False):
     pre = 'filep' if settings['file_secure'] else 'file'
 
     btn_b = []
-    for file in files:
+    for file in files_b:
         if ENABLE_SHORTLINK and settings["button"]:
             btn_b.append([
                 InlineKeyboardButton(
@@ -1832,7 +1832,7 @@ async def auto_filter(client, msg, spoll=False):
             ])
 
     btn_a = []
-    if files_a:
+    if files:
         btn_a.append([
             InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။  !", callback_data=f"select_lang#{message.from_user.id}")
         ])
