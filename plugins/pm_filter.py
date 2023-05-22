@@ -1806,47 +1806,47 @@ async def auto_filter(client, msg, spoll=False):
         btn_b = [
             [
                 InlineKeyboardButton(
-                    text=f"[{get_size(file.file_size)}] {file.file_name}", url=await get_shortlink(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
+                    text=f"[{get_size(file2.file_size)}] {file2.file_name}", url=await get_shortlink(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file2.file_id}")
                 ),
             ]
-            for file in files
+            for file2 in files
         ]
     elif ENABLE_SHORTLINK and not settings["button"]:
         btn_b = [
             [
                 InlineKeyboardButton(
-                    text=f"{file.file_name}",
-                    url=await get_shortlink(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
+                    text=f"{file2.file_name}",
+                    url=await get_shortlink(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file2.file_id}")
                 ),
                 InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)}",
-                    url=await get_shortlink(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
+                    text=f"{get_size(file2.file_size)}",
+                    url=await get_shortlink(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file2.file_id}")
                 ),
             ]
-            for file in files
+            for file2 in files
         ]
     elif settings["button"] and not ENABLE_SHORTLINK:
         btn_b = [
             [
                 InlineKeyboardButton(
-                    text=f"[{get_size(file.file_size)}] {file.file_name}", callback_data=f'{pre}#{file.file_id}'
+                    text=f"[{get_size(file2.file_size)}] {file2.file_name}", callback_data=f'{pre}#{file2.file_id}'
                 ),
             ]
-            for file in files
+            for file2 in files
         ]
     else:
         btn_b = [
             [
                 InlineKeyboardButton(
-                    text=f"{file.file_name}",
+                    text=f"{file2.file_name}",
                     callback_data=f'{pre}#{file.file_id}',
                 ),
                 InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)}",
-                    callback_data=f'{pre}#{file.file_id}',
+                    text=f"{get_size(file2.file_size)}",
+                    callback_data=f'{pre}#{file2.file_id}',
                 ),
             ]
-            for file in files
+            for file2 in files
         ]
 
     imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] else None
