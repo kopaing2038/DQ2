@@ -1758,9 +1758,9 @@ async def auto_filter(client, msg, spoll=False):
     reqstr1 = msg.from_user.id if msg.from_user else 0
     reqstr = await client.get_users(reqstr1)
     files = []
+    files_b = []  # Add this line to declare files_b as an empty list
     btn_b = []
-    files_b = []
-
+    
     if not spoll:
         message = msg
         settings = await get_settings(message.chat.id)
@@ -1770,19 +1770,18 @@ async def auto_filter(client, msg, spoll=False):
             return
         if len(message.text) < 100:
             search = message.text
-            files_a, offset, total_results = await get_search_results(message.chat.id, search.lower(), offset=0, filter=True)
+            files_a, offset, total_results = await get_search_results(message.chat.id ,search.lower(), offset=0, filter=True)            
             if not files_a:
                 search = message.text
-                files_b, offset, total_results = await get_search_results2(message.chat.id, search.lower(), offset=0, filter=True)
-                if not files_b:
+                files_b, offset, total_results = await get_search_results2(message.chat.id ,search.lower(), offset=0, filter=True)
+                if not files_b and not files_a:
                     if settings["spell_check"]:
-                        return await advantage_spell_check(client, msg)
+                        return await advantage_spell_chok(client, msg)
                     else:
                         return
-                else:
-                    if NO_RESULTS_MSG:
-                        await client.send_message(chat_id=LOG_CHANNEL, text=(script.NORSLTS.format(reqstr.id, reqstr.mention, search)))
-                    return
+        else:
+            return
+    else:
         else:
             return
     else:
@@ -1790,18 +1789,19 @@ async def auto_filter(client, msg, spoll=False):
         search, files_a, offset, total_results = spoll
         settings = await get_settings(message.chat.id)
 
+    
     temp.SEND_ALL_TEMP[message.from_user.id] = files
     temp.KEYWORD[message.from_user.id] = search
-
+    
     if 'is_shortlink' in settings.keys():
         ENABLE_SHORTLINK = settings['is_shortlink']
     else:
         await save_group_settings(message.chat.id, 'is_shortlink', False)
         ENABLE_SHORTLINK = False
-
+    
     pre = 'filep' if settings['file_secure'] else 'file'
     btn_a = []
-
+    
     if files_a:
         btn_a.append([
             InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။  !", callback_data=f"select_lang#{message.from_user.id}")
@@ -1812,8 +1812,7 @@ async def auto_filter(client, msg, spoll=False):
             btn_b = [
                 [
                     InlineKeyboardButton(
-                        text=f"[{get_size(file2.file_size)}] {file2.file_name}",
-                        url=await get_shortlink(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file2.file_id}")
+                        text=f"[{get_size(file2.file_size)}] {file2.file_name}", url=await get_shortlink(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file2.file_id}")
                     ),
                 ]
                 for file2 in files_b
@@ -1836,8 +1835,7 @@ async def auto_filter(client, msg, spoll=False):
             btn_b = [
                 [
                     InlineKeyboardButton(
-                        text=f"[{get_size(file2.file_size)}] {file2.file_name}",
-                        callback_data=f'{pre}#{file2.file_id}'
+                        text=f"[{get_size(file2.file_size)}] {file2.file_name}", callback_data=f'{pre}#{file2.file_id}'
                     ),
                 ]
                 for file2 in files_b
@@ -1865,20 +1863,20 @@ async def auto_filter(client, msg, spoll=False):
             imdb = await get_poster(search, file=(files_a[0])["file_name"])
         else:
             imdb = {}
-
+        
     elif files_b:
         settings = await get_settings(message.chat.id)
         if settings["imdb"]:
             imdb = await get_poster(search, file=(files_b[0])["file_name"])
         else:
             imdb = {}
-
+        
     else:
         return
-    cap = f"{search} "
+
     TEMPLATE = settings['template']
     if imdb:
-        cap += TEMPLATE.format(
+        cap = TEMPLATE.format(
             query=search,
             title=imdb['title'],
             votes=imdb['votes'],
@@ -1910,7 +1908,7 @@ async def auto_filter(client, msg, spoll=False):
             **locals()
         )
     else:
-        cap += f"<b>Hᴇʏ {message.from_user.mention}, Hᴇʀᴇ ɪs Wʜᴀᴛ I Fᴏᴜɴᴅ Iɴ Mʏ Dᴀᴛᴀʙᴀsᴇ Fᴏʀ Yᴏᴜʀ Qᴜᴇʀʏ {search}.</b>"
+        cap = f"<b>Hᴇʏ {message.from_user.mention}, Hᴇʀᴇ ɪs Wʜᴀᴛ I Fᴏᴜɴᴅ Iɴ Mʏ Dᴀᴛᴀʙᴀsᴇ Fᴏʀ Yᴏᴜʀ Qᴜᴇʀʏ {search}.</b>"
     if imdb and imdb.get('poster'):
         try:
             hehe = await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
@@ -1965,6 +1963,8 @@ async def auto_filter(client, msg, spoll=False):
             await message.delete()
     if spoll:
         await msg.message.delete()
+
+
 
 
 async def advantage_spell_chok(client, msg):
