@@ -1780,12 +1780,12 @@ async def auto_filter(client, msg, spoll=False):
         else:
             return
     else:
-        files = files_a + files_b  
+        #files = files_a + files_b  
         message = msg.message.reply_to_message  # msg will be callback query
-        search, files, offset, total_results = spoll
+        search, files_a, offset, total_results = spoll
         settings = await get_settings(message.chat.id)
 
-    files = files_a + files_b    
+    
     temp.SEND_ALL_TEMP[message.from_user.id] = files
     temp.KEYWORD[message.from_user.id] = search
     
@@ -1802,6 +1802,8 @@ async def auto_filter(client, msg, spoll=False):
         btn_a.append([
             InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။  !", callback_data=f"select_lang#{message.from_user.id}")
         ])
+
+
     if ENABLE_SHORTLINK and settings["button"]:
         btn_b = [
             [
@@ -1849,8 +1851,27 @@ async def auto_filter(client, msg, spoll=False):
             for file2 in files
         ]
 
-    imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] else None
+    #imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] else None
     btn = btn_a + btn_b
+
+    if files_a:
+        settings = await get_settings(message.chat.id)
+        if settings["imdb"]:  # type: ignore
+           imdb = await get_poster(search, file=(files_a[0])["file_name"])
+        else:
+            imdb = {}
+        
+    elif files_b:
+        settings = await get_settings(message.chat.id)
+        if settings["imdb"]:  # type: ignore
+            imdb = await get_poster(search, file=(files_b[0])["file_name"])
+        else:
+           imdb = {}
+
+        
+    else:
+        return
+
     TEMPLATE = settings['template']
 
     if imdb:
