@@ -206,7 +206,8 @@ Nᴀᴍᴇ - {}"""
 
 🏷 Title: <a href={url}>{title}</a> - <a href={url}/releaseinfo>{year}</a>
 🌟 Rating: <a href={url}/ratings>{rating}</a> / 10
-🎭 Genres: {genres}</b>"""
+🎭 Genres: {genres}</b>
+🙋🏻‍♂️ Request : {message.from_user.mention}"""
     
     ALL_FILTERS = """
 <b>Hᴇʏ {}, Tʜᴇsᴇ ᴀʀᴇ ᴍʏ ᴛʜʀᴇᴇ ᴛʏᴘᴇs ᴏғ ғɪʟᴛᴇʀs.</b>"""
