@@ -1758,7 +1758,7 @@ async def auto_filter(client, msg, spoll=False):
     reqstr = await client.get_users(reqstr1)
     files = []
     btn_b = []
-    
+
     if not spoll:
         message = msg
         settings = await get_settings(message.chat.id)
@@ -1768,15 +1768,12 @@ async def auto_filter(client, msg, spoll=False):
             return
         if len(message.text) < 100:
             search = message.text
-            files_a, offset, total_results = await get_search_results(message.chat.id ,search.lower(), offset=0, filter=True)
-            files_b, offset, total_results = await get_search_results2(message.chat.id ,search.lower(), offset=0, filter=True)
-            if not files_a and files_b:
-                if settings["spell_check"]:
-                    return await advantage_spell_check(client, msg)
-                else:
-                    if NO_RESULTS_MSG:
-                        await client.send_message(chat_id=LOG_CHANNEL, text=(script.NORSLTS.format(reqstr.id, reqstr.mention, search)))
-                    return
+            files_a, offset, total_results = await get_search_results(message.chat.id, search.lower(), offset=0, filter=True)
+
+            if not files_a:
+                search = message.text
+                files_b, offset, total_results = await get_search_results2(message.chat.id, search.lower(), offset=0, filter=True)
+                return
         else:
             return
     else:
