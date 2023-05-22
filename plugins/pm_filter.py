@@ -1792,36 +1792,42 @@ async def auto_filter(client, msg, spoll=False):
         ENABLE_SHORTLINK = False
     pre = 'filep' if settings['file_secure'] else 'file'
 
-    btn_b = []
-    for file in files:
-        if ENABLE_SHORTLINK:
-            url = await get_shortlink(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
-            if settings["button"]:
-                btn_b.append([InlineKeyboardButton(text=f"[{get_size(file.file_size)}] {file.file_name}", url=url)])
-            else:
-                btn_b.append([InlineKeyboardButton(text=f"{file.file_name}", url=url),
-                             InlineKeyboardButton(text=f"{get_size(file.file_size)}", url=url)])
-        else:
-            if settings["button"]:
-                btn_b.append([InlineKeyboardButton(text=f"[{get_size(file.file_size)}] {file.file_name}", callback_data=f'{pre}#{file.file_id}')])
-            else:
-                btn_b.append([InlineKeyboardButton(text=f"{file.file_name}", callback_data=f'{pre}#{file.file_id}'),
-                             InlineKeyboardButton(text=f"{get_size(file.file_size)}", callback_data=f'{pre}#{file.file_id}')])
+    btn_a = [
+        [
+            InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။  !", callback_data=f"select_lang#{message.from_user.id}")
+        ]
+    ] if files_a else []
 
-    btn_a = []
-    if files_a:
-        btn_a.append([InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။  !", callback_data=f"select_lang#{message.from_user.id}")])
+    btn_b = [
+        [
+            InlineKeyboardButton(f'[{get_size(file.file_size)}] {file.file_name}', callback_data=f'{pre}#{file.file_id}')
+        ]
+        for file in files
+    ] if files else []
 
     try:
-        auto_delete = settings['auto_delete']
+        if settings['auto_delete']:
+            btn_b.insert(0, 
+                [
+                    InlineKeyboardButton(f'ᴍᴏᴠɪᴇ', 'minfo'),
+                    InlineKeyboardButton(f'ꜱᴇʀɪᴇꜱ', 'sinfo')
+                ]
+            )
+        else:
+            btn_b.insert(0, 
+                [
+                    InlineKeyboardButton(f'ᴍᴏᴠɪᴇ', 'minfo'),
+                    InlineKeyboardButton(f'ꜱᴇʀɪᴇꜱ', 'sinfo')
+                ]
+            )       
     except KeyError:
         await save_group_settings(message.chat.id, 'auto_delete', True)
-        auto_delete = True
-
-    btn_b.insert(0, [
-        InlineKeyboardButton(f'ᴍᴏᴠɪᴇ', 'minfo'),
-        InlineKeyboardButton(f'ꜱᴇʀɪᴇꜱ', 'sinfo')
-    ])
+        btn_b.insert(0, 
+            [
+                InlineKeyboardButton(f'ᴍᴏᴠɪᴇ', 'minfo'),
+                InlineKeyboardButton(f'ꜱᴇʀɪᴇꜱ', 'sinfo')
+            ]
+        )
 
     btn_b.insert(0, [
         InlineKeyboardButton("! Sᴇɴᴅ Aʟʟ Tᴏ PM !", callback_data=f"send_fall#{pre}#{0}#{message.from_user.id}"),
@@ -1833,26 +1839,37 @@ async def auto_filter(client, msg, spoll=False):
         BUTTONS[key] = search
         req = message.from_user.id if message.from_user else 0
         try:
-            max_btn = settings['max_btn']
+            if settings['max_btn']:
+                btn_b.append(
+                    [
+                        InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
+                        InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}",callback_data="pages"),
+                        InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪",callback_data=f"next_{req}_{key}_{offset}")
+                    ]
+                )
+            else:
+                btn_b.append(
+                    [
+                        InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
+                        InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/int(MAX_B_TN))}",callback_data="pages"),
+                        InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪",callback_data=f"next_{req}_{key}_{offset}")
+                    ]
+                )
         except KeyError:
             await save_group_settings(message.chat.id, 'max_btn', True)
-            max_btn = True
-
-        if max_btn:
-            btn_b.append([
-                InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
-                InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}", callback_data="pages"),
-                InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{offset}")
-            ])
-        else:
-            btn_b.append([
-                InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
-                InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/int(MAX_B_TN))}", callback_data="pages"),
-                InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{offset}")
-            ])
+            btn_b.append(
+                [
+                    InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
+                    InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}",callback_data="pages"),
+                    InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪",callback_data=f"next_{req}_{key}_{offset}")
+                ]
+            )
     else:
-        btn_b.append([InlineKeyboardButton(text="𝐍𝐎 𝐌𝐎𝐑𝐄 𝐏𝐀𝐆𝐄𝐒 𝐀𝐕𝐀𝐈𝐋𝐀𝐁𝐋𝐄", callback_data="pages")])
-
+        btn_b.append(
+            [
+                InlineKeyboardButton(text="𝐍𝐎 𝐌𝐎𝐑𝐄 𝐏𝐀𝐆𝐄𝐒 𝐀𝐕𝐀𝐈𝐋𝐀𝐁𝐋𝐄",callback_data="pages")
+            ]
+        )
     imdb = await get_poster(search, file=(files_a[0]).file_name) if settings["imdb"] else None
     btn = btn_a + btn_b
     TEMPLATE = settings['template']
