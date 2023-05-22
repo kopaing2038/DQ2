@@ -1795,23 +1795,26 @@ async def auto_filter(client, msg, spoll=False):
         await save_group_settings(message.chat.id, 'is_shortlink', False)
         ENABLE_SHORTLINK = False
     pre = 'filep' if settings['file_secure'] else 'file'
-    
+
     btn = []
     btn2 = []
-    btn.append([InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။  !", callback_data=f"select_lang#{message.from_user.id}")])
+    btn = [[
+               InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။  !", callback_data=f"select_lang#{message.from_user.id}")           
+    ]]
     if not files:
         return
 
     if ENABLE_SHORTLINK and settings["button"]:
-        btn2 = [
-            [InlineKeyboardButton(
-                text=f"[{get_size(file2.file_size)}] {file2.file_name}",
-                url=await get_shortlink(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file2.file_id}")
-            )]
+        btn = [
+            [
+                InlineKeyboardButton(
+                    text=f"[{get_size(file2.file_size)}] {file2.file_name}", url=await get_shortlink(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file2.file_id}")
+                ),
+            ]
             for file2 in files
         ]
     elif ENABLE_SHORTLINK and not settings["button"]:
-        btn2 = [
+        btn = [
             [
                 InlineKeyboardButton(
                     text=f"{file2.file_name}",
@@ -1825,15 +1828,16 @@ async def auto_filter(client, msg, spoll=False):
             for file2 in files
         ]
     elif settings["button"] and not ENABLE_SHORTLINK:
-        btn2 = [
-            [InlineKeyboardButton(
-                text=f"[{get_size(file2.file_size)}] {file2.file_name}",
-                callback_data=f'{pre}#{file2.file_id}'
-            )]
+        btn = [
+            [
+                InlineKeyboardButton(
+                    text=f"[{get_size(file2.file_size)}] {file2.file_name}", callback_data=f'{pre}#{file2.file_id}'
+                ),
+            ]
             for file2 in files
         ]
     else:
-        btn2 = [
+        btn = [
             [
                 InlineKeyboardButton(
                     text=f"{file2.file_name}",
@@ -1853,32 +1857,26 @@ async def auto_filter(client, msg, spoll=False):
         req = message.from_user.id if message.from_user else 0
         try:
             if settings['max_btn']:
-                btn2.append([
-                    InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
-                    InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}",callback_data="pages"),
-                    InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪",callback_data=f"next_{req}_{key}_{offset}")
-                ])
+                btn2.append(
+                    [InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"), InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}",callback_data="pages"), InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪",callback_data=f"next_{req}_{key}_{offset}")]
+                )
             else:
-                btn2.append([
-                    InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
-                    InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/int(MAX_B_TN))}",callback_data="pages"),
-                    InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪",callback_data=f"next_{req}_{key}_{offset}")
-                ])
+                btn2.append(
+                    [InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"), InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/int(MAX_B_TN))}",callback_data="pages"), InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪",callback_data=f"next_{req}_{key}_{offset}")]
+                )
         except KeyError:
             await save_group_settings(message.chat.id, 'max_btn', True)
-            btn2.append([
-                InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
-                InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}",callback_data="pages"),
-                InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪",callback_data=f"next_{req}_{key}_{offset}")
-            ])
+            btn2.append(
+                [InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"), InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}",callback_data="pages"), InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪",callback_data=f"next_{req}_{key}_{offset}")]
+            )
     else:
-        btn2.append([
-            InlineKeyboardButton(text="𝐍𝐎 𝐌𝐎𝐑𝐄 𝐏𝐀𝐆𝐄𝐒 𝐀𝐕𝐀𝐈𝐋𝐀𝐁𝐋𝐄",callback_data="pages")
-        ])
-        if offset != "":
-            key = f"{message.chat.id}-{message.id}"
-            BUTTONS[key] = search
-            req = message.from_user.id if message.from_user else 0
+        btn2.append(
+            [InlineKeyboardButton(text="𝐍𝐎 𝐌𝐎𝐑𝐄 𝐏𝐀𝐆𝐄𝐒 𝐀𝐕𝐀𝐈𝐋𝐀𝐁𝐋𝐄",callback_data="pages")]
+        )
+    if offset != "":
+        key = f"{message.chat.id}-{message.id}"
+        BUTTONS[key] = search
+        req = message.from_user.id if message.from_user else 0
     btn_3 = btn + btn2
     imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] else None
     TEMPLATE = settings['template']
