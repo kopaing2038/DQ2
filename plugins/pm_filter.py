@@ -1757,6 +1757,7 @@ async def auto_filter(client, msg, spoll=False):
     reqstr1 = msg.from_user.id if msg.from_user else 0
     reqstr = await client.get_users(reqstr1)
     files = []
+    btn_b = []
     
     if not spoll:
         message = msg
@@ -1767,9 +1768,8 @@ async def auto_filter(client, msg, spoll=False):
             return
         if len(message.text) < 100:
             search = message.text
-            files, offset, total_results = await get_search_results(message.chat.id, search.lower(), offset=0, filter=True)
-            files_b, offset, total_results = await get_search_results2(message.chat.id, search.lower(), offset=0, filter=True)
-
+            files_a, offset, total_results = await get_search_results(message.chat.id ,search.lower(), offset=0, filter=True)
+            files, offset, total_results = await get_search_results2(message.chat.id ,search.lower(), offset=0, filter=True)
             if not files:
                 if settings["spell_check"]:
                     return await advantage_spell_check(client, msg)
@@ -1777,82 +1777,75 @@ async def auto_filter(client, msg, spoll=False):
                     if NO_RESULTS_MSG:
                         await client.send_message(chat_id=LOG_CHANNEL, text=(script.NORSLTS.format(reqstr.id, reqstr.mention, search)))
                     return
-            else:
-                return
+        else:
+            return
     else:
         message = msg.message.reply_to_message  # msg will be callback query
         search, files, offset, total_results = spoll
         settings = await get_settings(message.chat.id)
-
+        
     temp.SEND_ALL_TEMP[message.from_user.id] = files
     temp.KEYWORD[message.from_user.id] = search
-
-    ENABLE_SHORTLINK = settings.get('is_shortlink', False)
-    await save_group_settings(message.chat.id, 'is_shortlink', ENABLE_SHORTLINK)
-
+    
+    if 'is_shortlink' in settings.keys():
+        ENABLE_SHORTLINK = settings['is_shortlink']
+    else:
+        await save_group_settings(message.chat.id, 'is_shortlink', False)
+        ENABLE_SHORTLINK = False
+    
     pre = 'filep' if settings['file_secure'] else 'file'
-
-    btn_b = []
-    for file in files_b:
-        if ENABLE_SHORTLINK and settings["button"]:
-            btn_b.append([
-                InlineKeyboardButton(
-                    text=f"[{get_size(file.file_size)}] {file.file_name}",
-                    url=await get_shortlink(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
-                ),
-            ])
-        elif ENABLE_SHORTLINK and not settings["button"]:
-            btn_b.append([
-                InlineKeyboardButton(
-                    text=f"{file.file_name}",
-                    url=await get_shortlink(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
-                ),
-                InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)}",
-                    url=await get_shortlink(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
-                ),
-            ])
-        elif settings["button"] and not ENABLE_SHORTLINK:
-            btn_b.append([
-                InlineKeyboardButton(
-                    text=f"[{get_size(file.file_size)}] {file.file_name}",
-                    callback_data=f'{pre}#{file.file_id}'
-                ),
-            ])
-        else:
-            btn_b.append([
-                InlineKeyboardButton(
-                    text=f"{file.file_name}",
-                    callback_data=f'{pre}#{file.file_id}',
-                ),
-                InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)}",
-                    callback_data=f'{pre}#{file.file_id}',
-                ),
-            ])
-
-    btn_a = []
-    if files:
-        btn_a.append([
+    btn = []
+    
+    if files_a:
+        btn.append([
             InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။  !", callback_data=f"select_lang#{message.from_user.id}")
         ])
-
-    try:
-        auto_delete = settings['auto_delete']
-    except KeyError:
-        auto_delete = True
-        await save_group_settings(message.chat.id, 'auto_delete', auto_delete)
-
-    btn_b.insert(0, [
-        InlineKeyboardButton(f'ᴍᴏᴠɪᴇ', 'minfo'),
-        InlineKeyboardButton(f'ꜱᴇʀɪᴇꜱ', 'sinfo')
-    ])
-
-    btn_b.insert(0, [
-        InlineKeyboardButton("! Sᴇɴᴅ Aʟʟ Tᴏ PM !", callback_data=f"send_fall#{pre}#{0}#{message.from_user.id}"),
-        InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs !", callback_data=f"select_lang#{message.from_user.id}")
-    ])
-
+    if ENABLE_SHORTLINK and settings["button"]:
+        btn = [
+            [
+                InlineKeyboardButton(
+                    text=f"[{get_size(file.file_size)}] {file.file_name}", url=await get_shortlink(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
+                ),
+            ]
+            for file in files
+        ]
+    elif ENABLE_SHORTLINK and not settings["button"]:
+        btn = [
+            [
+                InlineKeyboardButton(
+                    text=f"{file.file_name}",
+                    url=await get_shortlink(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
+                ),
+                InlineKeyboardButton(
+                    text=f"{get_size(file.file_size)}",
+                    url=await get_shortlink(message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
+                ),
+            ]
+            for file in files
+        ]
+    elif settings["button"] and not ENABLE_SHORTLINK:
+        btn = [
+            [
+                InlineKeyboardButton(
+                    text=f"[{get_size(file.file_size)}] {file.file_name}", callback_data=f'{pre}#{file.file_id}'
+                ),
+            ]
+            for file in files
+        ]
+    else:
+        btn = [
+            [
+                InlineKeyboardButton(
+                    text=f"{file.file_name}",
+                    callback_data=f'{pre}#{file.file_id}',
+                ),
+                InlineKeyboardButton(
+                    text=f"{get_size(file.file_size)}",
+                    callback_data=f'{pre}#{file.file_id}',
+                ),
+            ]
+            for file in files
+        ]
     if offset != "":
         key = f"{message.chat.id}-{message.id}"
         BUTTONS[key] = search
@@ -1881,7 +1874,7 @@ async def auto_filter(client, msg, spoll=False):
         ])
 
     imdb = await get_poster(search, file=(files_a[0]).file_name) if settings["imdb"] else None
-    btn = btn_a + btn_b
+    
     TEMPLATE = settings['template']
 
     if imdb:
