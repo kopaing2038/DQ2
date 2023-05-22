@@ -18,7 +18,7 @@ from pyrogram import Client, filters, enums
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
 from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings, get_shortlink, send_all, check_verification, get_token, temp
 from database.users_chats_db import db
-from database.ia_filterdb import Media, get_file_details, get_search_results, get_bad_files
+from database.ia_filterdb import Media, get_file_details, get_search_results, get_bad_files, parse_link
 from database.pm_filterDb import Media2, get_file_details2, get_search_results2, get_bad_files2
 from database.filters_mdb import (
     del_all,
@@ -1753,20 +1753,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     
 
-async def parse_link(chat_id: int, msg_id: int) -> str:
-    username = USERNAMES.get(chat_id)
-    if username is None:
-        try:
-            chat = await bot.get_chat(chat_id)
-        except Exception as e:
-            log.exception(e)
-            username = ""
-        else:
-            username = chat.username if chat.username else ""  # type: ignore
-        USERNAMES[chat_id] = username
-    if username:
-        return f"https://t.me/{username}/{msg_id}"
-    return f"https://t.me/c/{(str(chat_id)).replace('-100', '')}/{msg_id}"
+
+
+
 
 
 async def auto_filter(client, msg, spoll=False):
@@ -1847,8 +1836,9 @@ async def auto_filter(client, msg, spoll=False):
             btn_b = [
                 [
                     InlineKeyboardButton(
-                        text=f"{file2.file_name} [{get_size(file2.file_size)}]", callback_data=f'{pre}#{file2.file_id}'
-                    ),
+                        text=f"🔮 {file2.file_name} [{get_size(file2.file_size)}]", 
+                        url=f'{(await parse_link(file2["chat_id"], file2["message_id"]))}',
+                ), 
                 ]
                 for file2 in files_b
             ]
