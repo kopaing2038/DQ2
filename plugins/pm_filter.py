@@ -1768,7 +1768,7 @@ async def auto_filter(client, msg, spoll=False):
             return
         if len(message.text) < 100:
             search = message.text
-            files_a, offset, total_results = await get_search_results(message.chat.id ,search.lower(), offset=0, filter=True)
+            files, offset, total_results = await get_search_results(message.chat.id ,search.lower(), offset=0, filter=True)
             files, offset, total_results = await get_search_results2(message.chat.id ,search.lower(), offset=0, filter=True)
             if not files:
                 if settings["spell_check"]:
@@ -1796,7 +1796,7 @@ async def auto_filter(client, msg, spoll=False):
     pre = 'filep' if settings['file_secure'] else 'file'
     btn = []
     
-    if files_a:
+    if get_search_results2:
         btn.append([
             InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။  !", callback_data=f"select_lang#{message.from_user.id}")
         ])
