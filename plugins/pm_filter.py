@@ -1770,7 +1770,7 @@ async def auto_filter(client, msg, spoll=False):
             search = message.text
             files_a, offset, total_results = await get_search_results(message.chat.id ,search.lower(), offset=0, filter=True)
             
-            if not files_a:
+            if files_a:
                 search = message.text
                 files_b, offset, total_results = await get_search_results2(message.chat.id ,search.lower(), offset=0, filter=True)
                 if not files_b:
