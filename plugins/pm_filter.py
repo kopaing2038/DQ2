@@ -1840,7 +1840,7 @@ async def auto_filter(client, msg, spoll=False):
             for file in files
         ]
     
-    if filter_a:
+    if files_a:
         btn_a = [
             [
                 InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။  !", callback_data=f"select_lang#{message.from_user.id}")
