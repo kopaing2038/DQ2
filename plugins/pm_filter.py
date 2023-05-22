@@ -158,6 +158,7 @@ async def next_page(bot, query):
     except KeyError:
         await save_group_settings(query.message.chat.id, 'auto_delete', True)
 
+
     try:
         if settings['max_btn']:
             if 0 < offset <= 10:
@@ -228,6 +229,7 @@ async def next_page(bot, query):
         InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs !", callback_data=f"select_lang#{req}")
     ])
     
+
     try:
         if settings['auto_delete']:
             await query.edit_message_reply_markup(
@@ -235,11 +237,11 @@ async def next_page(bot, query):
             )
         else:
             await query.edit_message_reply_markup(
-                reply_markup=InlineKeyboardMarkup(btn),
-                parse_mode='HTML'
+                reply_markup=InlineKeyboardMarkup(btn)
             )
     except MessageNotModified:
         pass
+
     await query.answer()
 
 
