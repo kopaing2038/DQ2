@@ -1774,7 +1774,7 @@ async def auto_filter(client, msg, spoll=False):
             if not files_a:
                 search = message.text
                 files_b, offset, total_results = await get_search_results2(message.chat.id, search.lower(), offset=0, filter=True)
-                if not files_b and not files_a:
+                if not files_b:
                     if settings["spell_check"]:
                         return await advantage_spell_check(client, msg)
                     else:
@@ -1856,31 +1856,6 @@ async def auto_filter(client, msg, spoll=False):
                 ]
                 for file2 in files_b
             ]
-
-        try:
-            if settings['max_btn']:
-                btn_b.append(
-                    [InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
-                     InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}", callback_data="pages"),
-                     InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{offset}")]
-                )
-            else:
-                btn_b.append(
-                    [InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
-                     InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/int(MAX_B_TN))}", callback_data="pages"),
-                     InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{offset}")]
-                )
-        except KeyError:
-            await save_group_settings(message.chat.id, 'max_btn', True)
-            btn_b.append(
-                [InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
-                 InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}", callback_data="pages"),
-                 InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{offset}")]
-            )
-    else:
-        btn_b.append(
-            [InlineKeyboardButton(text="𝐍𝐎 𝐌𝐎𝐑𝐄 𝐏𝐀𝐆𝐄𝐒 𝐀𝐕𝐀𝐈𝐋𝐀𝐁𝐋𝐄", callback_data="pages")]
-        )
 
     btn = btn_a + btn_b
 
