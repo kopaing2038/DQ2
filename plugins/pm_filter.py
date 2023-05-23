@@ -322,7 +322,7 @@ async def language_check(bot, query):
                     ),
                 ]
                 for file in files
-            ]
+	    ]
         elif settings['button'] and not ENABLE_SHORTLINK:
             btn = [
                 [
@@ -333,6 +333,7 @@ async def language_check(bot, query):
                     ),
                 ]
                 for file in files
+	    ]
         else:
             btn = [
                 [
