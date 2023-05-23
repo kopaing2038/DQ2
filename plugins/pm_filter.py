@@ -303,7 +303,8 @@ async def language_check(bot, query):
             btn = [
                 [
                     InlineKeyboardButton(
-                        text=f"{file.file_name} [{get_size(file.file_size)}] {file.caption}", url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
+                        text=re.sub(r'{file\.file_name}', file.file_name, "{file.file_name} [{get_size(file.file_size)}] {file.caption}"),
+                        url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
                     ),
                 ]
                 for file in files
@@ -312,7 +313,7 @@ async def language_check(bot, query):
             btn = [
                 [
                     InlineKeyboardButton(
-                        text=f"{file.file_name}",
+                        text=re.sub(r'{file\.file_name}', file.file_name, "{file.file_name}"),
                         url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
                     ),
                     InlineKeyboardButton(
@@ -322,23 +323,21 @@ async def language_check(bot, query):
                 ]
                 for file in files
             ]
-
         elif settings['button'] and not ENABLE_SHORTLINK:
             btn = [
                 [
-                   InlineKeyboardButton(
-                        text=re.sub(r'{file\.file_name}', f'<font size="6">{file.file_name}</font>', f"{file.file_name} [{get_size(file.file_size)}] {file.caption}"),
+                    InlineKeyboardButton(
+                        text=re.sub(r'{file\.file_name}', file.file_name, "{file.file_name} [{get_size(file.file_size)}] {file.caption}"),
                         callback_data=f'{pre}#{file.file_id}'
                     ),
                 ]
                 for file in files
             ]
         else:
-          
             btn = [
                 [
                     InlineKeyboardButton(
-                        text=f"{file.file_name}",
+                        text=re.sub(r'{file\.file_name}', file.file_name, "{file.file_name}"),
                         callback_data=f'{pre}#{file.file_id}',
                     ),
                     InlineKeyboardButton(
@@ -382,12 +381,10 @@ async def language_check(bot, query):
             btn.append(
                 [InlineKeyboardButton(text="𝐍𝐎 𝐌𝐎𝐑𝐄 𝐏𝐀𝐆𝐄𝐒 𝐀𝐕𝐀𝐈𝐋𝐀𝐁𝐋𝐄", callback_data="pages")]
             )
-            
 
         try:
             await query.edit_message_reply_markup(
-                reply_markup=InlineKeyboardMarkup(btn),
-                
+                reply_markup=InlineKeyboardMarkup(btn)
             )
         except MessageNotModified:
             pass
