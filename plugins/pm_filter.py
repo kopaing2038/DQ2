@@ -322,16 +322,19 @@ async def language_check(bot, query):
                 ]
                 for file in files
             ]
+
         elif settings['button'] and not ENABLE_SHORTLINK:
             btn = [
                 [
-                    InlineKeyboardButton(
-                        text=re.sub(r'{file\.file_name}', f'<font size="6">{file.file_name}</font>', f"{file.file_name} [{get_size(file.file_size)}] {file.caption}", callback_data=f'{pre}#{file.file_id}'
+                   InlineKeyboardButton(
+                        text=re.sub(r'{file\.file_name}', f'<font size="6">{file.file_name}</font>', f"{file.file_name} [{get_size(file.file_size)}] {file.caption}"),
+                        callback_data=f'{pre}#{file.file_id}'
                     ),
                 ]
                 for file in files
             ]
         else:
+          
             btn = [
                 [
                     InlineKeyboardButton(
