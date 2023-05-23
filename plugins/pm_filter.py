@@ -388,7 +388,8 @@ async def language_check(bot, query):
 
         try:
             await query.edit_message_reply_markup(
-                reply_markup=InlineKeyboardMarkup(btn)
+                reply_markup=InlineKeyboardMarkup(btn),
+                parse_mode=ParseMode.HTML
             )
         except MessageNotModified:
             pass
