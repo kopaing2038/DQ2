@@ -12,7 +12,7 @@ import pyrogram
 from database.connections_mdb import active_connection, all_connections, delete_connection, if_active, make_active, \
     make_inactive
 from info import ADMINS, AUTH_CHANNEL, AUTH_USERS, SUPPORT_CHAT_ID, CUSTOM_FILE_CAPTION, MSG_ALRT, PICS, AUTH_GROUPS, P_TTI_SHOW_OFF, GRP_LNK, CHNL_LNK, NOR_IMG, LOG_CHANNEL, SPELL_IMG, MAX_B_TN, IMDB, \
-    SINGLE_BUTTON, SPELL_CHECK_REPLY, IMDB_TEMPLATE, NO_RESULTS_MSG, IS_VERIFY, DOWNLOAD_BUTTON
+    SINGLE_BUTTON, SPELL_CHECK_REPLY, IMDB_TEMPLATE, NO_RESULTS_MSG, IS_VERIFY, DOWNLOAD_BUTTON, FILE_GROUP
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaPhoto
 from pyrogram import Client, filters, enums
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
@@ -425,7 +425,7 @@ async def advantage_spoll_choker(bot, query):
     _, user, movie_ = query.data.split('#')
     movies = SPELL_CHECK.get(query.message.reply_to_message.id)
     if not movies:
-        return await query.answer(script.OLD_ALRT_TXT.format(query.from_user.first_name), show_alert=True)
+        return await query.answer 
     if int(user) != 0 and query.from_user.id != int(user):
         return await query.answer(script.ALRT_TXT.format(query.from_user.first_name), show_alert=True)
     if movie_ == "close_spellcheck":
@@ -663,12 +663,12 @@ async def cb_handler(client: Client, query: CallbackQuery):
         clicked = query.from_user.id
         try:
             typed = query.message.reply_to_message.from_user.id
-        except:
+        except AttributeError:
             typed = query.from_user.id
         ident, file_id = query.data.split("#")
         files_ = await get_file_details(file_id)
         if not files_:
-            return await query.answer('Nᴏ sᴜᴄʜ ғɪʟᴇ ᴇxɪsᴛ.')
+            return await query.answer('No such file exists.')
         files = files_[0]
         title = files.file_name
         size = get_size(files.file_size)
@@ -681,9 +681,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
                                                        file_caption='' if f_caption is None else f_caption)
             except Exception as e:
                 logger.exception(e)
-            f_caption = f_caption
+            f_caption = f_caption if f_caption is not None else ''
         if f_caption is None:
-            f_caption = f"{files.file_name}"
+            f_caption = files.file_name
 
         try:
             if AUTH_CHANNEL and not await is_subscribed(client, query):
@@ -691,31 +691,46 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
                     return
                 else:
-                    await query.answer(f"Hᴇʏ {query.from_user.first_name}, Tʜɪs Is Nᴏᴛ Yᴏᴜʀ Mᴏᴠɪᴇ Rᴇǫᴜᴇsᴛ. Rᴇǫᴜᴇsᴛ Yᴏᴜʀ's !", show_alert=True)
+                    await query.answer(f"Hey {query.from_user.first_name}, This is not your movie request. Request yours!", show_alert=True)
             elif settings['botpm']:
                 if clicked == typed:
                     await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
                     return
                 else:
-                    await query.answer(f"Hᴇʏ {query.from_user.first_name}, Tʜɪs Is Nᴏᴛ Yᴏᴜʀ Mᴏᴠɪᴇ Rᴇǫᴜᴇsᴛ. Rᴇǫᴜᴇsᴛ Yᴏᴜʀ's !", show_alert=True)
+                    await query.answer(f"Hey {query.from_user.first_name}, This is not your movie request. Request yours!", show_alert=True)
             else:
                 if clicked == typed:
-                    await client.send_cached_media(
-                        chat_id=query.from_user.id,
+                    file_send = await bot.send_cached_media(
+                        chat_id=FILE_GROUP,
                         file_id=file_id,
                         caption=f_caption,
                         protect_content=True if ident == "filep" else False,
                         reply_markup=InlineKeyboardMarkup(
                             [
-                             [
-                              InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
-                              InlineKeyboardButton('Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ', url=CHNL_LNK)
-                           ],[
-                              InlineKeyboardButton("Bᴏᴛ Oᴡɴᴇʀ", url="t.me/KOPAINGLAY15")
-                             ]
+                                [
+                                    InlineKeyboardButton('Support Group', url=GRP_LNK),
+                                    InlineKeyboardButton('Updates Channel', url=CHNL_LNK)
+                                ],
+                                [
+                                    InlineKeyboardButton("Bot Owner", url="t.me/KOPAINGLAY15")
+                                ]
                             ]
                         )
                     )
+                    caption1 = f"⚠️{query.from_user.mention} \n\nအချောလေး ရှာတဲ့  {files_.file_name} ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ "
+                    await bot.send_message(
+                        chat_id=query.from_user.id,
+                        text=caption1,
+                        reply_markup=InlineKeyboardMarkup(
+                            [
+                                [InlineKeyboardButton('Join Database link', url="https://t.me/+6Rq1ZLh5UExiNTUx")],
+                                [InlineKeyboardButton(f'📥 {files_.file_name} 📥', url=file_send.link)]
+                            ]
+                        )
+                    )
+                    await asyncio.sleep(600)
+                    await file_send.delete()
+                    await message.delete()
                 else:
                     await query.answer(f"Hᴇʏ {query.from_user.first_name}, Tʜɪs Is Nᴏᴛ Yᴏᴜʀ Mᴏᴠɪᴇ Rᴇǫᴜᴇsᴛ. Rᴇǫᴜᴇsᴛ Yᴏᴜʀ's !", show_alert=True)
                 await query.answer('Cʜᴇᴄᴋ PM, I ʜᴀᴠᴇ sᴇɴᴛ ғɪʟᴇs ɪɴ PM', show_alert=True)
@@ -725,6 +740,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
         except Exception as e:
             await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
+
+                    #await client.send_cached_media(
+                        #chat_id=query.from_user.id,
+
 
     if query.data.startswith("file2"):
         clicked = query.from_user.id
