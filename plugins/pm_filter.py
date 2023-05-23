@@ -326,7 +326,7 @@ async def language_check(bot, query):
             btn = [
                 [
                     InlineKeyboardButton(
-                        text=f"{file.file_name} [{get_size(file.file_size)}] {file.caption}", callback_data=f'{pre}#{file.file_id}'
+                        text=re.sub(r'{file\.file_name}', f'<font size="6">{file.file_name}</font>', f"{file.file_name} [{get_size(file.file_size)}] {file.caption}", callback_data=f'{pre}#{file.file_id}'
                     ),
                 ]
                 for file in files
@@ -380,11 +380,6 @@ async def language_check(bot, query):
                 [InlineKeyboardButton(text="𝐍𝐎 𝐌𝐎𝐑𝐄 𝐏𝐀𝐆𝐄𝐒 𝐀𝐕𝐀𝐈𝐋𝐀𝐁𝐋𝐄", callback_data="pages")]
             )
             
-
-        for row in btn:
-            for button in row:
-                button.text = re.sub(r"<size=(\d+)>", "", button.text)  # Remove existing size tag if present
-                button.text = f"<size=10>{button.text}</size>"
 
         try:
             await query.edit_message_reply_markup(
