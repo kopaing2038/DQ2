@@ -867,7 +867,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 reply_markup=InlineKeyboardMarkup(btn)
             )
             return
-        await client.send_cached_media(
+        file_send = await client.send_cached_media(
             chat_id=FILE_GROUP,
             file_id=file_id,
             caption=f_caption,
@@ -883,6 +883,21 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 ]
             )
         )
+        caption1 = f"⚠️{query.from_user.mention} \n\nအချောလေး ရှာတဲ့  {files_.file_name} ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ "
+        await client.send_message(
+             chat_id=query.from_user.id,
+             text=caption1,
+             reply_markup=InlineKeyboardMarkup(
+                    [
+                        [InlineKeyboardButton('Join Database link', url="https://t.me/+6Rq1ZLh5UExiNTUx")],
+                        [InlineKeyboardButton(f'📥 {files_.file_name} 📥', url=file_send.link)]
+                    ]
+             )
+        )
+        await asyncio.sleep(600)
+        await file_send.delete()
+        await message.delete()   
+  
     elif query.data == "pages":
         await query.answer()
 
