@@ -303,7 +303,8 @@ async def language_check(bot, query):
             btn = [
                 [
                     InlineKeyboardButton(
-                        text=f"{file.file_name} [{get_size(file.file_size)}] {file.caption}", url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
+                        text=f"<small>{file.file_name} [{get_size(file.file_size)}] {file.caption}</small>",
+                        url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
                     ),
                 ]
                 for file in files
@@ -312,11 +313,11 @@ async def language_check(bot, query):
             btn = [
                 [
                     InlineKeyboardButton(
-                        text=f"{file.file_name}",
+                        text=f"<small>{file.file_name}</small>",
                         url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
                     ),
                     InlineKeyboardButton(
-                        text=f"{get_size(file.file_size)}",
+                        text=f"<small>{get_size(file.file_size)}</small>",
                         url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
                     ),
                 ]
@@ -326,7 +327,8 @@ async def language_check(bot, query):
             btn = [
                 [
                     InlineKeyboardButton(
-                        text=f"{file.file_name} [{get_size(file.file_size)}] {file.caption}", callback_data=f'{pre}#{file.file_id}'
+                        text=f"<small>{file.file_name} [{get_size(file.file_size)}] {file.caption}</small>",
+                        callback_data=f'{pre}#{file.file_id}'
                     ),
                 ]
                 for file in files
@@ -335,11 +337,11 @@ async def language_check(bot, query):
             btn = [
                 [
                     InlineKeyboardButton(
-                        text=f"{file.file_name}",
+                        text=f"<small>{file.file_name}</small>",
                         callback_data=f'{pre}#{file.file_id}',
                     ),
                     InlineKeyboardButton(
-                        text=f"{get_size(file.file_size)}",
+                        text=f"<small>{get_size(file.file_size)}</small>",
                         callback_data=f'{pre}#{file.file_id}',
                     ),
                 ]
@@ -351,12 +353,11 @@ async def language_check(bot, query):
                 pass
         except KeyError:
             await save_group_settings(query.message.chat.id, 'auto_delete', True)
-            
+
         btn.insert(0, [
             InlineKeyboardButton("! Sᴇɴᴅ Aʟʟ Tᴏ PM !", callback_data=f"send_fall#{pre}#{0}#{userid}"),
             InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။ !", callback_data=f"select_lang#{userid}")
         ])
-
 
         if offset != "":
             key = f"{query.message.chat.id}-{query.message.id}"
