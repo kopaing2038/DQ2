@@ -192,13 +192,25 @@ Nᴀᴍᴇ - {}"""
 𝗠𝗲𝘀𝘀𝗮𝗴𝗲 <b>: {}</b>"""
 
     CAPTION = """
-<b>📂 Fɪʟᴇ ɴᴀᴍᴇ : </b> <code>{file_name}</code>
+</b> <code>{file_name}</code>
 
-<b>
+<code>{file_size}</code>
+
+🎟 ʀᴇǫᴜsᴛᴇᴅ ʙʏ :{message.from_user.mention}
 
 =========== • ✠ • ===========
-▫️ ᴄʜᴀɴɴᴇʟ : @MKSVIPLINK2
-▫️ sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ : @MKS_REQUESTGROUP
+🔘 ဤအဖွဲ့မှ ဖိုင်ကို ဒေါင်းလုဒ်မလုပ်ပါနှင့်။
+
+🔘 copyright ပြသာနာများကြောင့် 10 မိနစ်အကြာတွင် ဖိုင်ကို auto ဖျက်သွားမည်ဖြစ်သည်။
+
+🔘 ဒေါင်းလုဒ်တစ်ဝက်တွင် ဖိုင်ကို ဖျက်လိုက်သောအခါတွင် ဒေတာများစွာ ဆုံးရှုံးသွားမည်ဖြစ်သည်။
+
+🔘 တစ်နေရာရာကို ကူးပြီး ဒေါင်းလုဒ်လုပ်ပါ...
+    Forward လုပ်၍ save message လုပ်ပါ။
+
+🔘 ဘယ်လိုရှေ့ဆက်ရမလဲ မသိရင် ဒီ Video လေးကို ကြည့်ပါ...<a href='https://t.me/TelegramTips/242'>Click Here</a>
+
+⏩ How To Forward : <a href='https://t.me/TelegramTips/242'>Click Here</a>
 =========== • ✠ • ===========</b>"""
 
     IMDB_TEMPLATE_TXT = """
