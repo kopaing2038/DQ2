@@ -509,7 +509,7 @@ async def delete_all_index(bot, message):
                 ],
                 [
                     InlineKeyboardButton(
-                        text="Yᴇs 2 ", callback_data="autofilter_delete2"
+                        text="Yᴇs 2 ", callback_data="autofilter_d"
                     )
                 ],
                 [
@@ -529,7 +529,7 @@ async def delete_all_index_confirm(bot, message):
     await message.answer("Eᴠᴇʀʏᴛʜɪɴɢ's Gᴏɴᴇ")
     await message.message.edit('Sᴜᴄᴄᴇsғᴜʟʟʏ Dᴇʟᴇᴛᴇᴅ Aʟʟ Tʜᴇ Iɴᴅᴇxᴇᴅ Fɪʟᴇs.')
 
-@Client.on_callback_query(filters.regex(r'^autofilter_delete2'))
+@Client.on_callback_query(filters.regex(r'^autofilter_d'))
 async def delete_all_index_2confirm(bot, message):
     await Media2.collection.drop()
     await message.answer("Eᴠᴇʀʏᴛʜɪɴɢ's Gᴏɴᴇ")
