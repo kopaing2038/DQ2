@@ -715,7 +715,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                             ]
                         ) 
                     ) 
-                    caption1 = f"⚠️{query.from_user.mention} \n\nအချောလေး ရှာတဲ့  {files.file_name} ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ "
+                    caption1 = f"Hi {query.from_user.mention} \n\nအချောလေး ရှာတဲ့  {files.file_name} ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ \n\nဝင်မရရင် Join Database Link ကို Join ပါ "
                     await query.message.reply_text(
                         caption1,
                         reply_markup=InlineKeyboardMarkup(
