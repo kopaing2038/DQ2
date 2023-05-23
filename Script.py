@@ -206,7 +206,7 @@ Nᴀᴍᴇ - {}"""
 🔘 တစ်နေရာရာကို ကူးပြီး ဒေါင်းလုဒ်လုပ်ပါ...
     Forward လုပ်၍ save message လုပ်ပါ။
 
-🔘 ဘယ်လိုရှေ့ဆက်ရမလဲ မသိရင် ဒီ Video လေးကို ကြည့်ပါ...<a href='https://t.me/TelegramTips/242'>Click Here</a>
+🔘 ဘယ်လို save message လုပ်ရမလဲ မသိရင် ဒီ Video လေးကို ကြည့်ပါ...<a href='https://t.me/TelegramTips/242'>Click Here</a>
 
 ⏩ How To Forward : <a href='https://t.me/TelegramTips/242'>Click Here</a>
 =========== • ✠ • ===========</b>"""
