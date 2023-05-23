@@ -62,7 +62,7 @@ GRP_LNK = environ.get('GRP_LNK', 'https://t.me/MKS_REQUESTGROUP')
 CHNL_LNK = environ.get('CHNL_LNK', 'https://t.me/MKSVIPLINK2')
 MSG_ALRT = environ.get('MSG_ALRT', 'Wʜᴀᴛ Aʀᴇ Yᴏᴜ Lᴏᴏᴋɪɴɢ Aᴛ ?')
 LOG_CHANNEL = int(environ.get('LOG_CHANNEL', -1001254905376))
-
+FILE_GROUP = int(environ.get('LOG_CHANNEL', -1001975432612))
 
 SUPPORT_CHAT = environ.get('SUPPORT_CHAT', 'DQ_The_File_Donor_Support')
 P_TTI_SHOW_OFF = is_enabled((environ.get('P_TTI_SHOW_OFF', "True")), True)
