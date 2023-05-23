@@ -141,7 +141,7 @@ async def next_page(bot, query):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"{file.file_name} [{get_size(file.file_size)}] ", url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
+                    text=f"🔹 {file.file_name} [{get_size(file.file_size)}] ", url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
                 ),
             ]
             for file in files
@@ -150,7 +150,7 @@ async def next_page(bot, query):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"{file.file_name}", url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
+                    text=f"🔹 {file.file_name}", url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
                 ),
                 InlineKeyboardButton(
                     text=f"{get_size(file.file_size)}",
@@ -163,7 +163,7 @@ async def next_page(bot, query):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"{file.file_name} [{get_size(file.file_size)}] ", callback_data=f'files#{file.file_id}'
+                    text=f"🔹 {file.file_name} [{get_size(file.file_size)}] ", callback_data=f'files#{file.file_id}'
                 ),
             ]
             for file in files
@@ -172,7 +172,7 @@ async def next_page(bot, query):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"{file.file_name}", callback_data=f'files#{file.file_id}'
+                    text=f"🔹 {file.file_name}", callback_data=f'files#{file.file_id}'
                 ),
                 InlineKeyboardButton(
                     text=f"{get_size(file.file_size)}",
@@ -302,7 +302,7 @@ async def language_check(bot, query):
             btn = [
                 [
                     InlineKeyboardButton(
-                        text=f"{file.file_name} [{get_size(file.file_size)}] {file.caption}", url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
+                        text=f"🔹 {file.file_name} [{get_size(file.file_size)}] {file.caption}", url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
                     ),
                 ]
                 for file in files
@@ -311,7 +311,7 @@ async def language_check(bot, query):
             btn = [
                 [
                     InlineKeyboardButton(
-                        text=f"{file.file_name}",
+                        text=f"🔹 {file.file_name}",
                         url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
                     ),
                     InlineKeyboardButton(
@@ -324,9 +324,8 @@ async def language_check(bot, query):
         elif settings['button'] and not ENABLE_SHORTLINK:
             btn = [
                 [
-                    InlineKeyboardButton(
-                       text=f"🔹 {file.file_name} [{get_size(file.file_size)}] {file.caption}",
-                       callback_data=f'files#{file.file_id}'                    
+                    InlineKeyboardButton(                       
+                       text=f"🔹 {file.file_name} [{get_size(file.file_size)}] ", callback_data=f'files#{file.file_id}'                   
                     ),
                 ]
             for file in files
@@ -335,7 +334,7 @@ async def language_check(bot, query):
             btn = [
                 [
                     InlineKeyboardButton(
-                        text=f"{file.file_name}",
+                        text=f"🔹 {file.file_name}",
                         callback_data=f'{pre}#{file.file_id}',
                     ),
                     InlineKeyboardButton(
@@ -781,22 +780,36 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     await query.answer(f"Hᴇʏ {query.from_user.first_name}, Tʜɪs Is Nᴏᴛ Yᴏᴜʀ Mᴏᴠɪᴇ Rᴇǫᴜᴇsᴛ. Rᴇǫᴜᴇsᴛ Yᴏᴜʀ's !", show_alert=True)
             else:
                 if clicked == typed:
-                    await client.send_cached_media(
-                        chat_id=query.from_user.id,
+                    file_send = await client.send_cached_media(
+                        chat_id=FILE_GROUP,
                         file_id=file_id,
                         caption=f_caption,
                         protect_content=True if ident == "filep" else False,
                         reply_markup=InlineKeyboardMarkup(
                             [
                              [
-                              InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
-                              InlineKeyboardButton('Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ', url=CHNL_LNK)
+                              InlineKeyboardButton('Support Group', url=GRP_LNK),
+                              InlineKeyboardButton('Updates Channel', url=CHNL_LNK)
                            ],[
-                              InlineKeyboardButton("Bᴏᴛ Oᴡɴᴇʀ", url="t.me/KOPAINGLAY15")
+                              InlineKeyboardButton("Bot Owner", url="t.me/KOPAINGLAY15")
                              ]
+                            ]
+                        ) 
+                    ) 
+                    caption1 = f"⚠️{query.from_user.mention} \n\nအချောလေး ရှာတဲ့  {files_.file_name} ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ "
+                    await bot.send_message(
+                        chat_id=query.from_user.id,
+                        text=caption1,
+                        reply_markup=InlineKeyboardMarkup(
+                            [
+                                [InlineKeyboardButton('Join Database link', url="https://t.me/+6Rq1ZLh5UExiNTUx")],
+                                [InlineKeyboardButton(f'📥 {files_.file_name} 📥', url=file_send.link)]
                             ]
                         )
                     )
+                    await asyncio.sleep(600)
+                    await file_send.delete()
+                    await message.delete()   
                 else:
                     await query.answer(f"Hᴇʏ {query.from_user.first_name}, Tʜɪs Is Nᴏᴛ Yᴏᴜʀ Mᴏᴠɪᴇ Rᴇǫᴜᴇsᴛ. Rᴇǫᴜᴇsᴛ Yᴏᴜʀ's !", show_alert=True)
                 await query.answer('Cʜᴇᴄᴋ PM, I ʜᴀᴠᴇ sᴇɴᴛ ғɪʟᴇs ɪɴ PM', show_alert=True)
@@ -846,7 +859,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 InlineKeyboardButton("Vᴇʀɪғʏ", url=await get_token(client, query.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id))
             ]]
             await client.send_message(
-                chat_id=query.from_user.id,
+                chat_id=FILE_GROUP,
                 text="<b>Yᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴠᴇʀɪғɪᴇᴅ!\nKɪɴᴅʟʏ ᴠᴇʀɪғʏ ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ Sᴏ ᴛʜᴀᴛ ʏᴏᴜ ᴄᴀɴ ɢᴇᴛ ᴀᴄᴄᴇss ᴛᴏ ᴜɴʟɪᴍɪᴛᴇᴅ ᴍᴏᴠɪᴇs ᴜɴᴛɪʟ 12 ʜᴏᴜʀs ғʀᴏᴍ ɴᴏᴡ !</b>",
                 protect_content=True if ident == 'checksubp' else False,
                 disable_web_page_preview=True,
@@ -855,7 +868,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             )
             return
         await client.send_cached_media(
-            chat_id=query.from_user.id,
+            chat_id=FILE_GROUP,
             file_id=file_id,
             caption=f_caption,
             protect_content=True if ident == 'checksubp' else False,
