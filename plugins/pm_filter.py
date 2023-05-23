@@ -700,22 +700,36 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     await query.answer(f"Hᴇʏ {query.from_user.first_name}, Tʜɪs Is Nᴏᴛ Yᴏᴜʀ Mᴏᴠɪᴇ Rᴇǫᴜᴇsᴛ. Rᴇǫᴜᴇsᴛ Yᴏᴜʀ's !", show_alert=True)
             else:
                 if clicked == typed:
-                    await client.send_cached_media(
-                        chat_id=query.from_user.id,
+                    file_send = await client.send_cached_media(
+                        chat_id=FILE_GROUP,
                         file_id=file_id,
                         caption=f_caption,
                         protect_content=True if ident == "filep" else False,
                         reply_markup=InlineKeyboardMarkup(
                             [
                              [
-                              InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
-                              InlineKeyboardButton('Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ', url=CHNL_LNK)
+                              InlineKeyboardButton('Support Group', url=GRP_LNK),
+                              InlineKeyboardButton('Updates Channel', url=CHNL_LNK)
                            ],[
-                              InlineKeyboardButton("Bᴏᴛ Oᴡɴᴇʀ", url="t.me/KOPAINGLAY15")
+                              InlineKeyboardButton("Bot Owner", url="t.me/KOPAINGLAY15")
                              ]
                             ]
-                        )
+                        ) 
+                    )                     
+                    caption1 = f"⚠️{query.from_user.mention} \n\nအချောလေး ရှာတဲ့  {files_.file_name} ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ "
+                    await client.send_message(
+                        chat_id=query.from_user.id,
+                        text=caption1,
+                        reply_markup=InlineKeyboardMarkup(
+                            [
+                                [InlineKeyboardButton('Join Database link', url="https://t.me/+6Rq1ZLh5UExiNTUx")],
+                                [InlineKeyboardButton(f'📥 {files_.file_name} 📥', url=file_send.link)]
+                            ] 
+			)                       
                     )
+                    await asyncio.sleep(600)
+                    await file_send.delete()
+                    await message.delete()
                 else:
                     await query.answer(f"Hᴇʏ {query.from_user.first_name}, Tʜɪs Is Nᴏᴛ Yᴏᴜʀ Mᴏᴠɪᴇ Rᴇǫᴜᴇsᴛ. Rᴇǫᴜᴇsᴛ Yᴏᴜʀ's !", show_alert=True)
                 await query.answer('Cʜᴇᴄᴋ PM, I ʜᴀᴠᴇ sᴇɴᴛ ғɪʟᴇs ɪɴ PM', show_alert=True)
