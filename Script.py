@@ -211,6 +211,13 @@ Nᴀᴍᴇ - {}"""
 ⏩ How To Forward : <a href='https://t.me/TelegramTips/242'>Click Here</a>
 =========== • ✠ • ===========</b>"""
 
+
+    CAPTION2 = """
+</b> <code>{file_name}</code>
+
+=========== • ✠ • ===========
+=========== • ✠ • ===========</b>"""
+
     IMDB_TEMPLATE_TXT = """
 <b>Query: {query}
 
