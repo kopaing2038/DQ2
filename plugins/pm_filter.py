@@ -383,7 +383,7 @@ async def language_check(bot, query):
         # Add the desired text size to the button text
         for row in btn:
             for button in row:
-                button.text = f"<size=10>{button.text}</size>"
+                button.text = f"<font size='10'>{button.text}</font>"
 
         try:
             await query.edit_message_reply_markup(
