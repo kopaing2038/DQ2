@@ -153,8 +153,8 @@ async def start(client, message):
             if f_caption is None:
                 f_caption = f"{title}"
             try:
-                await client.send_cached_media(
-                    chat_id=message.from_user.id,
+                file_send = await client.send_cached_media(
+                    chat_id=FILE_GROUP,
                     file_id=msg.get("file_id"),
                     caption=f_caption,
                     protect_content=msg.get('protect', False),
@@ -169,11 +169,25 @@ async def start(client, message):
                         ]
                     )
                 )
+                caption1 = f"⚠️{query.from_user.mention} \n\nအချောလေး ရှာတဲ့  {files_.file_name} ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ "
+                await bot.send_message(
+                    chat_id=query.from_user.id,
+                    text=caption1,
+                    reply_markup=InlineKeyboardMarkup(
+                        [
+                            [InlineKeyboardButton('Join Database link', url="https://t.me/+6Rq1ZLh5UExiNTUx")],
+                            [InlineKeyboardButton(f'📥 {file_id.file_name} 📥', url=file_send.link)]
+                        ]
+                    )
+                )
+                await asyncio.sleep(600)
+                await file_send.delete()
+                await message.delete()   
             except FloodWait as e:
                 await asyncio.sleep(e.x)
                 logger.warning(f"Floodwait of {e.x} sec.")
-                await client.send_cached_media(
-                    chat_id=message.from_user.id,
+                file_send = await client.send_cached_media(
+                    chat_id=FILE_GROUP,
                     file_id=msg.get("file_id"),
                     caption=f_caption,
                     protect_content=msg.get('protect', False),
@@ -188,6 +202,20 @@ async def start(client, message):
                         ]
                     )
                 )
+                caption1 = f"⚠️{query.from_user.mention} \n\nအချောလေး ရှာတဲ့  {files_.file_name} ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ "
+                await bot.send_message(
+                    chat_id=query.from_user.id,
+                    text=caption1,
+                    reply_markup=InlineKeyboardMarkup(
+                        [
+                            [InlineKeyboardButton('Join Database link', url="https://t.me/+6Rq1ZLh5UExiNTUx")],
+                            [InlineKeyboardButton(f'📥 {file_id.file_name} 📥', url=file_send.link)]
+                        ]
+                    )
+                )
+                await asyncio.sleep(600)
+                await file_send.delete()
+                await message.delete()   
             except Exception as e:
                 logger.warning(e, exc_info=True)
                 continue
