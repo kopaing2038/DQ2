@@ -303,8 +303,7 @@ async def language_check(bot, query):
             btn = [
                 [
                     InlineKeyboardButton(
-                        text=f"\u2796 {file.file_name} [{get_size(file.file_size)}] {file.caption}",
-                        url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
+                        text=f"{file.file_name} [{get_size(file.file_size)}] {file.caption}", url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
                     ),
                 ]
                 for file in files
@@ -322,27 +321,25 @@ async def language_check(bot, query):
                     ),
                 ]
                 for file in files
-	    ]
+            ]
         elif settings['button'] and not ENABLE_SHORTLINK:
             btn = [
                 [
                     InlineKeyboardButton(
-                        text=f"{file.file_name} [{get_size(file.file_size)}] {file.caption}",
-                        callback_data=f'{pre}#{file.file_id}',
-                        text_size=10  # Added text_size parameter with value 10
+                        text=f"{file.file_name} [{get_size(file.file_size)}] {file.caption}", callback_data=f'{pre}#{file.file_id}'
                     ),
                 ]
                 for file in files
-	    ]
+            ]
         else:
             btn = [
                 [
                     InlineKeyboardButton(
-                        text=f"⁰⁰{file.file_name}⁰⁰ ",
+                        text=f"{file.file_name}",
                         callback_data=f'{pre}#{file.file_id}',
                     ),
                     InlineKeyboardButton(
-                        text=f"<small>{get_size(file.file_size)}</small>",
+                        text=f"{get_size(file.file_size)}",
                         callback_data=f'{pre}#{file.file_id}',
                     ),
                 ]
@@ -354,7 +351,7 @@ async def language_check(bot, query):
                 pass
         except KeyError:
             await save_group_settings(query.message.chat.id, 'auto_delete', True)
-
+            
         btn.insert(0, [
             InlineKeyboardButton("! Sᴇɴᴅ Aʟʟ Tᴏ PM !", callback_data=f"send_fall#{pre}#{0}#{userid}"),
             InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။ !", callback_data=f"select_lang#{userid}")
@@ -367,22 +364,27 @@ async def language_check(bot, query):
             try:
                 if settings['max_btn']:
                     btn.append(
-                        [InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"), InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}",callback_data="pages"), InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪",callback_data=f"next_{req}_{key}_{offset}")]
+                        [InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"), InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}", callback_data="pages"), InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{offset}")]
                     )
-
                 else:
                     btn.append(
-                        [InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"), InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/int(MAX_B_TN))}",callback_data="pages"), InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪",callback_data=f"next_{req}_{key}_{offset}")]
+                        [InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"), InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/int(MAX_B_TN))}", callback_data="pages"), InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{offset}")]
                     )
             except KeyError:
                 await save_group_settings(query.message.chat.id, 'max_btn', True)
                 btn.append(
-                    [InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"), InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}",callback_data="pages"), InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪",callback_data=f"next_{req}_{key}_{offset}")]
+                    [InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"), InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}", callback_data="pages"), InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{offset}")]
                 )
         else:
             btn.append(
-                [InlineKeyboardButton(text="𝐍𝐎 𝐌𝐎𝐑𝐄 𝐏𝐀𝐆𝐄𝐒 𝐀𝐕𝐀𝐈𝐋𝐀𝐁𝐋𝐄",callback_data="pages")]
+                [InlineKeyboardButton(text="𝐍𝐎 𝐌𝐎𝐑𝐄 𝐏𝐀𝐆𝐄𝐒 𝐀𝐕𝐀𝐈𝐋𝐀𝐁𝐋𝐄", callback_data="pages")]
             )
+            
+        # Add the desired text size to the button text
+        for row in btn:
+            for button in row:
+                button.text = f"<size=10>{button.text}</size>"
+
         try:
             await query.edit_message_reply_markup(
                 reply_markup=InlineKeyboardMarkup(btn)
@@ -392,7 +394,6 @@ async def language_check(bot, query):
         await query.answer()
     else:
         return await query.answer(f"Sorry, သင့်အတွက်  ဖိုင်တွေ ရှာမတွေ့ပါဘူး။ တစ်ခြားတစ်ခုကို နှိပ်ကြည့်ပါ။.", show_alert=True)
-
 
 @Client.on_callback_query(filters.regex(r"^select_lang"))
 async def select_language(bot, query):
