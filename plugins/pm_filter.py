@@ -716,7 +716,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                         ) 
                     ) 
                     caption1 = f"⚠️{query.from_user.mention} \n\nအချောလေး ရှာတဲ့  {files.file_name} ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ "
-                    await client.send_message(
+                    await query.message.reply_text(
                         chat_id=query.from_user.id,
                         text=caption1,
                         reply_markup=InlineKeyboardMarkup(
