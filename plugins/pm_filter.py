@@ -303,7 +303,7 @@ async def language_check(bot, query):
             btn = [
                 [
                     InlineKeyboardButton(
-                        text=f"<code><font size='10'>{file.file_name}</font></code>  [{get_size(file.file_size)}] {file.caption}",
+                        text=f"f"ˢᵐᵃˡˡ {file.file_name}  [{get_size(file.file_size)}] {file.caption}",
                         url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
                     ),
                 ]
@@ -327,7 +327,7 @@ async def language_check(bot, query):
             btn = [
                 [
                     InlineKeyboardButton(
-                        text=f"<code><font size='10'>{file.file_name}</font></code>  [{get_size(file.file_size)}] {file.caption}",
+                        text=f"f"ˢᵐᵃˡˡ {file.file_name}  [{get_size(file.file_size)}] {file.caption}",
                         callback_data=f'{pre}#{file.file_id}'
                     ),
                 ]
