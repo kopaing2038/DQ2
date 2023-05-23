@@ -715,7 +715,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                             ]
                         ) 
                     ) 
-                    caption1 = f"⚠️{query.from_user.mention} \n\nအချောလေး ရှာတဲ့  {files_.file_name} ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ "
+                    caption1 = f"⚠️{message.from_user.mention} \n\nအချောလေး ရှာတဲ့  {files_.file_name} ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ "
                     await bot.send_message(
                         chat_id=query.from_user.id,
                         text=caption1,
@@ -734,10 +734,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 await query.answer('Cʜᴇᴄᴋ PM, I ʜᴀᴠᴇ sᴇɴᴛ ғɪʟᴇs ɪɴ PM', show_alert=True)
         except UserIsBlocked:
             await query.answer('Uɴʙʟᴏᴄᴋ ᴛʜᴇ ʙᴏᴛ ᴍᴀʜɴ !', show_alert=True)
-        except PeerIdInvalid:
-            await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
-        except Exception as e:
-            await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
+
 
     if query.data.startswith("file2"):
         clicked = query.from_user.id
