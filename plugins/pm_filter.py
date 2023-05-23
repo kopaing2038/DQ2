@@ -327,7 +327,7 @@ async def language_check(bot, query):
             btn = [
                 [
                     InlineKeyboardButton(
-                        text=f"<span style='font-size: 6px;'>{file.file_name}</span> [{get_size(file.file_size)}] {file.caption}",
+                        text=f"text=f"[[{file.file_name}|size=6]] [{get_size(file.file_size)}] {file.caption}",
                         callback_data=f'{pre}#{file.file_id}'
                     ),
                 ]
