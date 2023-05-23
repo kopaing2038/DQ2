@@ -380,11 +380,11 @@ async def language_check(bot, query):
                 [InlineKeyboardButton(text="𝐍𝐎 𝐌𝐎𝐑𝐄 𝐏𝐀𝐆𝐄𝐒 𝐀𝐕𝐀𝐈𝐋𝐀𝐁𝐋𝐄", callback_data="pages")]
             )
             
-        # Add the desired text size to the button text
+
         for row in btn:
             for button in row:
+                button.text = re.sub(r"<size=(\d+)>", "", button.text)  # Remove existing size tag if present
                 button.text = f"<size=10>{button.text}</size>"
-                button.text_size = 10
 
         try:
             await query.edit_message_reply_markup(
