@@ -171,7 +171,7 @@ async def start(client, message):
                 )
                 caption1 = f"⚠️{message.from_user.mention} \n\nအချောလေး ရှာတဲ့  {files.file_name} ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ "
                 await bot.send_message(
-                    chat_id=query.from_user.id,
+                    chat_id=message.from_user.id,
                     text=caption1,
                     reply_markup=InlineKeyboardMarkup(
                         [
@@ -202,9 +202,9 @@ async def start(client, message):
                         ]
                     )
                 )
-                caption1 = f"⚠️{query.from_user.mention} \n\nအချောလေး ရှာတဲ့  {files_.file_name} ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ "
+                caption1 = f"⚠️{message.from_user.mention} \n\nအချောလေး ရှာတဲ့  {files_.file_name} ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ "
                 await client.send_message(
-                    chat_id=query.from_user.id,
+                    chat_id=message.from_user.id,
                     text=caption1,
                     reply_markup=InlineKeyboardMarkup(
                         [
@@ -336,7 +336,7 @@ async def start(client, message):
             )
             caption1 = f"⚠️{message.from_user.mention} \n\nအချောလေး ရှာတဲ့  {files_.file_name} ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ "
             await client.send_message(
-                 chat_id=query.from_user.id,
+                 chat_id=message.from_user.id,
                  text=caption1,
                  reply_markup=InlineKeyboardMarkup(
                         [
@@ -405,7 +405,7 @@ async def start(client, message):
     )
     caption1 = f"⚠️{message.from_user.mention} \n\nအချောလေး ရှာတဲ့  {files.file_name} ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ "
     await client.send_message(
-         chat_id=query.from_user.id,
+         chat_id=message.from_user.id,
          text=caption1,
          reply_markup=InlineKeyboardMarkup(
                 [
