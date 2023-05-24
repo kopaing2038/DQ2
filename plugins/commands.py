@@ -347,7 +347,7 @@ async def start(client, message):
             )
             await asyncio.sleep(600)
             await file_send.delete()
-            await message.delete()  
+            await msg.delete()  
             filetype = msg.media
             file = getattr(msg, filetype.value)
             title = file.file_name
@@ -387,7 +387,7 @@ async def start(client, message):
             reply_markup=InlineKeyboardMarkup(btn)
         )
         return
-    await client.send_cached_media(
+    file_send = await client.send_cached_media(
         chat_id=FILE_GROUP,
         file_id=file_id,
         caption=f_caption,
