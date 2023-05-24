@@ -334,7 +334,7 @@ async def start(client, message):
                     ]
                 )
             )
-            caption1 = f"⚠️{message.from_user.mention} \n\nအချောလေး ရှာတဲ့  {files_.file_name} ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ "
+            caption1 = f"Hi {message.from_user.mention} \n\nအချောလေး ရှာတဲ့  {files_.file_name} ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ \n\nဝင်မရရင် Join Database Link ကို Join ပါ "
             await client.send_message(
                  chat_id=message.from_user.id,
                  text=caption1,
@@ -352,7 +352,7 @@ async def start(client, message):
             file = getattr(msg, filetype.value)
             title = file.file_name
             size=get_size(file.file_size)
-            user = {message.from_user.mention}
+            user = message.from_user.mention
             f_caption = f"<code>{title}</code>"
             if CUSTOM_FILE_CAPTION:
                 try:
@@ -367,7 +367,7 @@ async def start(client, message):
     files = files_[0]
     title = files.file_name
     size=get_size(files.file_size)
-    user = {message.from_user.mention} 
+    user = message.from_user.mention 
     f_caption=files.caption
     if CUSTOM_FILE_CAPTION:
         try:
@@ -403,7 +403,7 @@ async def start(client, message):
             ]
         )
     )
-    caption1 = f"⚠️{message.from_user.mention} \n\nအချောလေး ရှာတဲ့  {files.file_name} ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ "
+    caption1 = f"Hi {message.from_user.mention} \n\nအချောလေး ရှာတဲ့  {files.file_name} ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ \n\nဝင်မရရင် Join Database Link ကို Join ပါ "
     await client.send_message(
          chat_id=message.from_user.id,
          text=caption1,
