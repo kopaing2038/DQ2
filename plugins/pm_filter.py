@@ -1730,7 +1730,7 @@ async def auto_filter(client, msg, spoll=False):
         if offset != "":
             key = f"{message.chat.id}-{message.id}"
             BUTTONS[key] = search
-            req = reqstr1
+            req = message.from_user.id if message.from_user else 0
             try:
                 if settings['max_btn']:
                     btn_b.append(
