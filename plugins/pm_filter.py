@@ -1729,7 +1729,7 @@ async def auto_filter(client, msg, spoll=False):
             ]
         if offset != "":
             key = f"{message.chat.id}-{message.id}"
-            BUTTONS[key] = files_b
+            BUTTONS[key] = search
             req = reqstr1
             try:
                 if settings['max_btn']:
