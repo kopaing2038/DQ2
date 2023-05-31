@@ -1673,9 +1673,7 @@ async def auto_filter(client, msg, spoll=False):
 
     pre = 'filep' if settings['file_secure'] else 'file'
     btn_a = []
-    key = f"{message.chat.id}-{message.id}"
-    BUTTONS[key] = search
-    req = message.from_user.id if message.from_user else 0
+
     if files_a:
         btn_a.append([
             InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။  !", callback_data=f"select_lang#{message.from_user.id}")
@@ -1731,8 +1729,8 @@ async def auto_filter(client, msg, spoll=False):
             ]
         if offset != "":
             key = f"{message.chat.id}-{message.id}"
-            BUTTONS[key] = search
-            req = message.from_user.id if message.from_user else 0
+            BUTTONS[key] = files_b
+            req = reqstr1
             try:
                 if settings['max_btn']:
                     btn_b.append(
