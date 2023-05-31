@@ -1630,14 +1630,13 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
 
 
-
 async def auto_filter(client, msg, spoll=False):
     reqstr1 = msg.from_user.id if msg.from_user else 0
     reqstr = await client.get_users(reqstr1)
     files = []
-    files_b = []  # Add this line to declare files_b as an empty list
+    files_b = []
     btn_b = []
-    
+
     if not spoll:
         message = msg
         settings = await get_settings(message.chat.id)
@@ -1647,13 +1646,13 @@ async def auto_filter(client, msg, spoll=False):
             return
         if len(message.text) < 100:
             search = message.text
-            files_a, offset, total_results = await get_search_results(message.chat.id ,search.lower(), offset=0, filter=True)            
+            files_a, offset, total_results = await get_search_results(message.chat.id, search.lower(), offset=0, filter=True)
             if not files_a:
                 search = message.text
-                files_b, offset, total_results = await get_search_results2(message.chat.id ,search.lower(), offset=0, filter=True)
+                files_b, offset, total_results = await get_search_results2(message.chat.id, search.lower(), offset=0, filter=True)
                 if not files_b and not files_a:
                     if settings["spell_check"]:
-                        return await advantage_spell_chok(client, msg)
+                        return await advantage_spell_check(client, msg)
                     else:
                         return
         else:
@@ -1663,19 +1662,18 @@ async def auto_filter(client, msg, spoll=False):
         search, files_a, offset, total_results = spoll
         settings = await get_settings(message.chat.id)
 
-    
     temp.SEND_ALL_TEMP[message.from_user.id] = files
     temp.KEYWORD[message.from_user.id] = search
-    
+
     if 'is_shortlink' in settings.keys():
         ENABLE_SHORTLINK = settings['is_shortlink']
     else:
         await save_group_settings(message.chat.id, 'is_shortlink', False)
         ENABLE_SHORTLINK = False
-    
+
     pre = 'filep' if settings['file_secure'] else 'file'
     btn_a = []
-    
+
     if files_a:
         btn_a.append([
             InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။  !", callback_data=f"select_lang#{message.from_user.id}")
@@ -1709,9 +1707,9 @@ async def auto_filter(client, msg, spoll=False):
             btn_b = [
                 [
                     InlineKeyboardButton(
-                        text=f"🔮 {file2.file_name} [{get_size(file2.file_size)}]", 
+                        text=f"🔮 {file2.file_name} [{get_size(file2.file_size)}]",
                         url=f'{(await parse_link(file2["chat_id"], file2["message_id"]))}',
-                ), 
+                    ),
                 ]
                 for file2 in files_b
             ]
@@ -1730,30 +1728,27 @@ async def auto_filter(client, msg, spoll=False):
                 for file2 in files_b
             ]
 
-        if offset != "":
-            key = f"{message.chat.id}-{message.id}"
-            BUTTONS[key] = search
-            req = message.from_user.id if message.from_user else 0
-            try:
-                if settings['max_btn']:
-                    btn_b.append(
-                        [
-                            InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
-                            InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}", callback_data="pages"),
-                            InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{offset}")
-                        ]
-                    )
-                else:
-                    btn_b.append(
-                        [
-                            InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
-                            InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/int(MAX_B_TN))}", callback_data="pages"),
-                            InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{offset}")
-                        ]
-                    )
-            except Exception as e:
-                print(f"Error: {e}")
+        try:
+            if settings['max_btn']:
+                btn_b.append(
+                    [
+                        InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
+                        InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}", callback_data="pages"),
+                        InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{offset}")
+                    ]
+                )
+            else:
+                btn_b.append(
+                    [
+                        InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
+                        InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/int(MAX_B_TN))}", callback_data="pages"),
+                        InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{offset}")
+                    ]
+                )
+        except Exception as e:
+            print(f"Error: {e}")
     btn = btn_a + btn_b
+
 
     if files_a:
         settings = await get_settings(message.chat.id)
