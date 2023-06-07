@@ -46,7 +46,7 @@ async def parse_link(client, message) -> str:
         try:
             chat = await client.get_chat(chat_id)
         except Exception as e:
-            log.exception(e)
+            logger.exception(e)
             username = ""
         else:
             username = chat.username if chat.username else ""  # type: ignore
