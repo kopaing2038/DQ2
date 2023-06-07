@@ -39,35 +39,23 @@ BUTTONS = {}
 SPELL_CHECK = {}
 
 
-async def parse_link(client, message) -> str:
-    if isinstance(message, int):
-        chat_id = message
-        msg_id = None
-    else:
-        chat_id = message.chat.id
-        msg_id = message.message_id
+
+
     
+async def parse_link(client, message) -> str:
     username = USERNAMES.get(chat_id)
     if username is None:
         try:
             chat = await client.get_chat(chat_id)
         except Exception as e:
-            logger.exception(e)
+            log.exception(e)
             username = ""
         else:
-            username = chat.username if chat.username else ""
+            username = chat.username if chat.username else ""  # type: ignore
         USERNAMES[chat_id] = username
-    
     if username:
-        if msg_id is not None:
-            return f"https://t.me/{username}/{msg_id}"
-        else:
-            return f"https://t.me/{username}"
-    
-    if msg_id is not None:
-        return f"https://t.me/c/{str(chat_id).replace('-100', '')}/{msg_id}"
-    else:
-        return f"https://t.me/c/{str(chat_id).replace('-100', '')}"
+        return f"https://t.me/{username}/{msg_id}"
+    return f"https://t.me/c/{(str(chat_id)).replace('-100', '')}/{msg_id}"
 
 
 
