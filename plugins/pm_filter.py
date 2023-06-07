@@ -20,6 +20,9 @@ from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_
 from database.users_chats_db import db
 from database.ia_filterdb import Media, get_file_details, get_search_results, get_bad_files
 from database.pm_filterDb import Media2, get_file_details2, get_search_results2, get_bad_files2
+from database.logger import LOGGER
+from database.cache import Cache
+from bot import Bot
 from database.filters_mdb import (
     del_all,
     find_filter,
@@ -32,6 +35,7 @@ from database.gfilters_mdb import (
 )
 import logging
 
+log = LOGGER(__name__)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
 USERNAMES = {}
@@ -39,23 +43,21 @@ BUTTONS = {}
 SPELL_CHECK = {}
 
 
-async def parse_link(client, message) -> str:
-    chat_id = message  # Assuming 'message' itself is the chat ID
-    username = USERNAMES.get(chat_id)
+bot = Bot
+async def parse_link(chat_id: int, msg_id: int) -> str:
+    username = Cache.USERNAMES.get(chat_id)
     if username is None:
         try:
-            chat = await client.get_chat(chat_id)
+            chat = await bot.get_chat(chat_id)
         except Exception as e:
-            logger.exception(e)
+            log.exception(e)
             username = ""
         else:
             username = chat.username if chat.username else ""  # type: ignore
-        USERNAMES[chat_id] = username
-    msg_id = 0  # You may need to provide the correct message ID here
+        Cache.USERNAMES[chat_id] = username
     if username:
         return f"https://t.me/{username}/{msg_id}"
     return f"https://t.me/c/{(str(chat_id)).replace('-100', '')}/{msg_id}"
-
 
 
 @Client.on_message(filters.group & filters.text & filters.incoming)
