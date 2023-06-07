@@ -20,7 +20,7 @@ from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_
 from database.users_chats_db import db
 from database.ia_filterdb import Media, get_file_details, get_search_results, get_bad_files
 from database.pm_filterDb import Media2, get_file_details2, get_search_results2, get_bad_files2
-from database.logger import LOGGER
+
 from database.cache import Cache
 from bot import Bot
 from database.filters_mdb import (
@@ -35,7 +35,7 @@ from database.gfilters_mdb import (
 )
 import logging
 
-log = LOGGER(__name__)
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
 USERNAMES = {}
@@ -50,7 +50,7 @@ async def parse_link(chat_id: int, msg_id: int) -> str:
         try:
             chat = await bot.get_chat(chat_id)
         except Exception as e:
-            log.exception(e)
+            logger.exception(e)
             username = ""
         else:
             username = chat.username if chat.username else ""  # type: ignore
