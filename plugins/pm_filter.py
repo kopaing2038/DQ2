@@ -382,8 +382,7 @@ async def next_page(bot, query):
 
     try:
         await query.message.edit_text(            
-            reply_markup=reply_markup,
-            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=reply_markup,            
             disable_web_page_preview=True
         )
     except MessageNotModified:
