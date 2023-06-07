@@ -1811,11 +1811,12 @@ async def auto_filter(client, msg, spoll=False):
         )
     else:
         cap = f"<b>Hᴇʏ {message.from_user.mention}, Hᴇʀᴇ ɪs Wʜᴀᴛ I Fᴏᴜɴᴅ Iɴ Mʏ Dᴀᴛᴀʙᴀsᴇ Fᴏʀ Yᴏᴜʀ Qᴜᴇʀʏ {search}.</b>"
+    cap2 = f"<b>Hᴇʏ {message.from_user.mention}, \n\nHᴇʀᴇ ɪs Wʜᴀᴛ I Fᴏᴜɴᴅ Iɴ Mʏ Dᴀᴛᴀʙᴀsᴇ Fᴏʀ Yᴏᴜʀ Qᴜᴇʀʏ {search}.</b>"
     if imdb and imdb.get('poster'):
         try:
             hehe = await client.send_photo(chat_id=FILE_GROUP2, photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
             await message.reply_text(
-                cap,
+                cap2,
                 reply_markup=InlineKeyboardMarkup(    
                     [
                         [InlineKeyboardButton('ဝင်မရရင်ဒီကိုအရင်နှိပ် Join ပေးပါ', url="https://t.me/+AGntow9MZbs2MjRh")],
@@ -1840,7 +1841,7 @@ async def auto_filter(client, msg, spoll=False):
             poster = pic.replace('.jpg', "._V1_UX360.jpg")
             hmm = await client.send_photo(chat_id=FILE_GROUP2, photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
             await message.reply_text(
-                cap,
+                cap2,
                 reply_markup=InlineKeyboardMarkup(    
                     [
                         [InlineKeyboardButton('ဝင်မရရင်ဒီကိုအရင်နှိပ် Join ပေးပါ', url="https://t.me/+AGntow9MZbs2MjRh")],
@@ -1876,7 +1877,7 @@ async def auto_filter(client, msg, spoll=False):
     else:
         fuk = await client.send_photo(chat_id=FILE_GROUP2, photo=NOR_IMG, caption=cap, reply_markup=InlineKeyboardMarkup(btn))
         await message.reply_text(
-            cap,
+            cap2,
             reply_markup=InlineKeyboardMarkup(    
                 [
                     [InlineKeyboardButton('ဝင်မရရင်ဒီကိုအရင်နှိပ် Join ပေးပါ', url="https://t.me/+AGntow9MZbs2MjRh")],
