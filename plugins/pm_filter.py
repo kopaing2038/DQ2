@@ -44,7 +44,7 @@ SPELL_CHECK = {}
 
 
 
-async def parse_link(client, message -> str:
+async def parse_link(client, message) -> str:
     chat_id = message 
     username = Cache.USERNAMES.get(chat_id)
     if username is None:
