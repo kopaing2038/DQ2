@@ -165,7 +165,7 @@ async def next_page(bot, query):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"[{get_size(file2.file_size)}] {file2.file_name}", callback_data=f'files#{file.file_id}'
+                    text=f"[{get_size(file2.file_size)}] {file2.file_name}", url=f'{(await parse_link(file2["chat_id"], file2["message_id"]))}'
                 ),
             ]
             for file2 in files
@@ -174,11 +174,11 @@ async def next_page(bot, query):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"{file2.file_name}", callback_data=f'files#{file2.file_id}'
+                    text=f"{file2.file_name}", url=f'{(await parse_link(file2["chat_id"], file2["message_id"]))}'
                 ),
                 InlineKeyboardButton(
                     text=f"{get_size(file2.file_size)}",
-                    callback_data=f'files_#{file2.file_id}',
+                    url=f'{(await parse_link(file2["chat_id"], file2["message_id"]))}'
                 ),
             ]
             for file2 in files
