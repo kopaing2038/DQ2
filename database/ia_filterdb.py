@@ -26,12 +26,12 @@ instance = Instance.from_db(db)
 USERNAMES = {}
 
 
-async def parse_link2(chat_id: int, msg_id: int) -> str:
+async def parse_link(chat_id: int, message_id: int) -> str:
     username = USERNAMES.get(chat_id)
 
     if username:
-        return f"https://t.me/{username}/{msg_id}"
-    return f"https://t.me/c/{(str(chat_id)).replace('-100', '')}/{msg_id}"
+        return f"https://t.me/{username}/{message_id}"
+    return f"https://t.me/c/{(str(chat_id)).replace('-100', '')}/{message_id}"
 
 
 
