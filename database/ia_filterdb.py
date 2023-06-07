@@ -33,20 +33,7 @@ async def parse_link2(chat_id: int, msg_id: int) -> str:
         return f"https://t.me/{username}/{msg_id}"
     return f"https://t.me/c/{(str(chat_id)).replace('-100', '')}/{msg_id}"
 
-async def parse_link(chat_id: int, msg_id: int) -> str:
-    username = USERNAMES.get(chat_id)
-    if username is None:
-        try:
-            chat = await bot.get_chat(chat_id)
-        except Exception as e:
-            logger.exception(e)
-            username = ""
-        else:
-            username = chat.username if chat.username else ""  # type: ignore
-        USERNAMES[chat_id] = username
-    if username:
-        return f"https://t.me/{username}/{msg_id}"
-    return f"https://t.me/c/{(str(chat_id)).replace('-100', '')}/{msg_id}"
+
 
 @instance.register
 class Media(Document):
