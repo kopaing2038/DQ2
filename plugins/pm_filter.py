@@ -39,11 +39,8 @@ BUTTONS = {}
 SPELL_CHECK = {}
 
 
-
-
-    
 async def parse_link(client, message) -> str:
-    chat_id = message.chat.id  # Assuming 'chat_id' is available in the 'message' object
+    chat_id = message  # Assuming 'message' itself is the chat ID
     username = USERNAMES.get(chat_id)
     if username is None:
         try:
@@ -54,10 +51,10 @@ async def parse_link(client, message) -> str:
         else:
             username = chat.username if chat.username else ""  # type: ignore
         USERNAMES[chat_id] = username
+    msg_id = 0  # You may need to provide the correct message ID here
     if username:
-        return f"https://t.me/{username}/{message.message_id}"
-    return f"https://t.me/c/{str(chat_id).replace('-100', '')}/{message.message_id}"
-
+        return f"https://t.me/{username}/{msg_id}"
+    return f"https://t.me/c/{(str(chat_id)).replace('-100', '')}/{msg_id}"
 
 
 
