@@ -381,8 +381,7 @@ async def next_page(bot, query):
     reply_markup = InlineKeyboardMarkup(buttons)
 
     try:
-        await query.message.edit_text(
-            text=message,
+        await query.message.edit_text(            
             reply_markup=reply_markup,
             parse_mode=ParseMode.MARKDOWN,
             disable_web_page_preview=True
