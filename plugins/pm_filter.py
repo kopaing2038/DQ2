@@ -122,24 +122,21 @@ async def next_page(bot, query):
         await query.answer(script.OLD_ALRT_TXT.format(query.from_user.first_name),show_alert=True)
         return
 
-    files = []
-    n_offset = 0
-    total = 0
-
     files_a, n_offset, total = await get_search_results(query.message.chat.id, search, offset=offset, filter=True)
     if not files_a:
         files_b, n_offset, total = await get_search_results2(query.message.chat.id, search, offset=offset, filter=True)
-        files = files_b
-
     try:
         n_offset = int(n_offset)
     except:
         n_offset = 0
 
-    if not files:
+    if not files_a and not files_b:
         return
+    files = files_a or files_b
+
     settings = await get_settings(query.message.chat.id)
     temp.SEND_ALL_TEMP[query.from_user.id] = files
+
     if 'is_shortlink' in settings.keys():
         ENABLE_SHORTLINK = settings['is_shortlink']
     else:
