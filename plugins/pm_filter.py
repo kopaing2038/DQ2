@@ -57,8 +57,8 @@ async def parse_link(client, message) -> str:
             username = chat.username if chat.username else ""  # type: ignore
         Cache.USERNAMES[chat_id] = username
     if username:
-        return f"https://t.me/{username}/{msg_id}"
-    return f"https://t.me/c/{(str(chat_id)).replace('-100', '')}/{msg_id}"
+        return f"https://t.me/{username}/{message_id}"
+    return f"https://t.me/c/{(str(chat_id)).replace('-100', '')}/{message_id}"
 
 
 @Client.on_message(filters.group & filters.text & filters.incoming)
