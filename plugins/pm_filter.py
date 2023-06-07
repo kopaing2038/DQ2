@@ -374,10 +374,13 @@ async def next_page(bot, query):
                 )
     
 
-    btn = btn_b + btn_a
+    
 
- 
-
+    if files_b:
+        buttons = btn_b
+    else:
+        buttons = btn_a
+    btn = buttons
     try:
         await query.edit_message_reply_markup(
             reply_markup=InlineKeyboardMarkup(btn)
