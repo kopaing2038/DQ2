@@ -1811,7 +1811,7 @@ async def auto_filter(client, msg, spoll=False):
         )
     else:
         cap = f"<b>Hᴇʏ {message.from_user.mention}, Hᴇʀᴇ ɪs Wʜᴀᴛ I Fᴏᴜɴᴅ Iɴ Mʏ Dᴀᴛᴀʙᴀsᴇ Fᴏʀ Yᴏᴜʀ Qᴜᴇʀʏ {search}.</b>"
-    cap2 = f"Hi {query.from_user.mention} \n\nအချောလေး ရှာတဲ့  {search}  ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ \n\nဝင်မရရင် Join Database Link ကို Join ပါ"
+    cap2 = f"Hi {message.from_user.mention} \n\nအချောလေး ရှာတဲ့  {search}  ဇာတ်ကား အဆင့်သင့်ပါ ⬇️ \n\nဝင်မရရင် Join Database Link ကို Join ပါ"
     if imdb and imdb.get('poster'):
         try:
             hehe = await client.send_photo(chat_id=FILE_GROUP2, photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
