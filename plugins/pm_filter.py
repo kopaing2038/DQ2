@@ -372,7 +372,7 @@ async def next_page(bot, query):
                         InlineKeyboardButton("𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{n_offset}")
                     ],
                 )
-    buttons = []
+    
     if files_b:
         buttons = btn_b
     else:
@@ -382,7 +382,7 @@ async def next_page(bot, query):
 
     try:
         await query.edit_message_reply_markup(
-            reply_markup=InlineKeyboardMarkup(buttons)
+            reply_markup=reply_markup
         )
     except MessageNotModified:
         pass
