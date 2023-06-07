@@ -110,7 +110,7 @@ Can't find movies here. Search in the group given below
 
 @Client.on_callback_query(filters.regex(r"^next"))
 async def next_page(bot, query):
-    ident, req, key, offset = query.data.split("_")
+    ident, req, key, offset, search = query.data.split("_")
     if int(req) not in [query.from_user.id, 0]:
         return await query.answer(script.ALRT_TXT.format(query.from_user.first_name), show_alert=True)
     try:
@@ -1737,7 +1737,7 @@ async def auto_filter(client, msg, spoll=False):
                         [
                             InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
                             InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}", callback_data="pages"),
-                            InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪", callback_data=f"#next_{req}_{key}_{offset}")
+                            InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{offset}_{search}")
                         ]
                     )
                 else:
@@ -1745,7 +1745,7 @@ async def auto_filter(client, msg, spoll=False):
                         [
                             InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
                             InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/int(MAX_B_TN))}", callback_data="pages"),
-                            InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪", callback_data=f"#next_{req}_{key}_{offset}")
+                            InlineKeyboardButton(text="𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{offset}_{search}")
                         ]
                     )
             except Exception as e:
