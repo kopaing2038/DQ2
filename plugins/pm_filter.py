@@ -122,6 +122,10 @@ async def next_page(bot, query):
         await query.answer(script.OLD_ALRT_TXT.format(query.from_user.first_name),show_alert=True)
         return
 
+    files = []
+    n_offset = 0
+    total = 0
+
     files_a, n_offset, total = await get_search_results(query.message.chat.id, search, offset=offset, filter=True)
     if not files_a:
         files_b, n_offset, total = await get_search_results2(query.message.chat.id, search, offset=offset, filter=True)
