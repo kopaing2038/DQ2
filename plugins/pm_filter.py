@@ -39,6 +39,24 @@ BUTTONS = {}
 SPELL_CHECK = {}
 
 
+async def parse_link(client, message) -> str:
+    chat_id = message.chat.id
+    msg_id = message.message_id
+    username = USERNAMES.get(chat_id)
+    if username is None:
+        try:
+            chat = await client.get_chat(chat_id)
+        except Exception as e:
+            logger.exception(e)
+            username = ""
+        else:
+            username = chat.username if chat.username else ""
+        USERNAMES[chat_id] = username
+    if username:
+        return f"https://t.me/{username}/{msg_id}"
+    return f"https://t.me/c/{str(chat_id).replace('-100', '')}/{msg_id}"
+
+
 @Client.on_message(filters.group & filters.text & filters.incoming)
 async def give_filter(client, message):
     if message.chat.id != SUPPORT_CHAT_ID:
