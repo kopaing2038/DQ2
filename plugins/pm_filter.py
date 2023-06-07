@@ -22,7 +22,7 @@ from database.ia_filterdb import Media, get_file_details, get_search_results, ge
 from database.pm_filterDb import Media2, get_file_details2, get_search_results2, get_bad_files2
 
 from database.cache import Cache
-from bot import Bot
+
 from database.filters_mdb import (
     del_all,
     find_filter,
@@ -43,12 +43,13 @@ BUTTONS = {}
 SPELL_CHECK = {}
 
 
-bot = Bot
-async def parse_link(chat_id: int, msg_id: int) -> str:
+
+async def parse_link(client, message -> str:
+    chat_id = message 
     username = Cache.USERNAMES.get(chat_id)
     if username is None:
         try:
-            chat = await bot.get_chat(chat_id)
+            chat = await client.get_chat(chat_id)
         except Exception as e:
             logger.exception(e)
             username = ""
