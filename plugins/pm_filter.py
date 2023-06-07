@@ -12,7 +12,7 @@ import pyrogram
 from database.connections_mdb import active_connection, all_connections, delete_connection, if_active, make_active, \
     make_inactive
 from info import ADMINS, AUTH_CHANNEL, AUTH_USERS, SUPPORT_CHAT_ID, CUSTOM_FILE_CAPTION, MSG_ALRT, PICS, AUTH_GROUPS, P_TTI_SHOW_OFF, GRP_LNK, CHNL_LNK, NOR_IMG, LOG_CHANNEL, SPELL_IMG, MAX_B_TN, IMDB, \
-    SINGLE_BUTTON, SPELL_CHECK_REPLY, IMDB_TEMPLATE, NO_RESULTS_MSG, IS_VERIFY, DOWNLOAD_BUTTON, FILE_GROUP
+    SINGLE_BUTTON, SPELL_CHECK_REPLY, IMDB_TEMPLATE, NO_RESULTS_MSG, IS_VERIFY, DOWNLOAD_BUTTON, FILE_GROUP, FILE_GROUP2
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaPhoto
 from pyrogram import Client, filters, enums
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
@@ -1807,7 +1807,18 @@ async def auto_filter(client, msg, spoll=False):
         cap = f"<b>Hᴇʏ {message.from_user.mention}, Hᴇʀᴇ ɪs Wʜᴀᴛ I Fᴏᴜɴᴅ Iɴ Mʏ Dᴀᴛᴀʙᴀsᴇ Fᴏʀ Yᴏᴜʀ Qᴜᴇʀʏ {search}.</b>"
     if imdb and imdb.get('poster'):
         try:
-            hehe = await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
+            hehe = await client.send_photo(chat_id=FILE_GROUP2, photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
+            await message.reply_text(
+                cap,
+                reply_markup=InlineKeyboardMarkup(    
+                    [
+                        [InlineKeyboardButton('ဝင်မရရင်ဒီကိုအရင်နှိပ် Join ပေးပါ', url="https://t.me/+AGntow9MZbs2MjRh")],
+                        [InlineKeyboardButton(f'📥 {search} 📥', url=hehe.link)]
+                    ]
+                ),
+                quote=True,
+                disable_web_page_preview=True,
+            )
             try:
                 if settings['auto_delete']:
                     await asyncio.sleep(600)
@@ -1821,7 +1832,18 @@ async def auto_filter(client, msg, spoll=False):
         except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
             pic = imdb.get('poster')
             poster = pic.replace('.jpg', "._V1_UX360.jpg")
-            hmm = await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
+            hmm = await client.send_photo(chat_id=FILE_GROUP2, photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
+            await message.reply_text(
+                cap,
+                reply_markup=InlineKeyboardMarkup(    
+                    [
+                        [InlineKeyboardButton('ဝင်မရရင်ဒီကိုအရင်နှိပ် Join ပေးပါ', url="https://t.me/+AGntow9MZbs2MjRh")],
+                        [InlineKeyboardButton(f'📥 {search} 📥', url=hmm.link)]
+                    ]
+                ),
+                quote=True,
+                disable_web_page_preview=True,
+            )
             try:
                 if settings['auto_delete']:
                     await asyncio.sleep(600)
@@ -1846,7 +1868,18 @@ async def auto_filter(client, msg, spoll=False):
                 await fek.delete()
                 await message.delete()
     else:
-        fuk = await message.reply_photo(photo=NOR_IMG, caption=cap, reply_markup=InlineKeyboardMarkup(btn))
+        fuk = await client.send_photo(chat_id=FILE_GROUP2, photo=NOR_IMG, caption=cap, reply_markup=InlineKeyboardMarkup(btn))
+        await message.reply_text(
+            cap,
+            reply_markup=InlineKeyboardMarkup(    
+                [
+                    [InlineKeyboardButton('ဝင်မရရင်ဒီကိုအရင်နှိပ် Join ပေးပါ', url="https://t.me/+AGntow9MZbs2MjRh")],
+                    [InlineKeyboardButton(f'📥 {search} 📥', url=fuk.link)]
+                ]
+            ),
+            quote=True,
+            disable_web_page_preview=True,
+        )
         try:
             if settings['auto_delete']:
                 await asyncio.sleep(600)
