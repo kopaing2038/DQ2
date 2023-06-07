@@ -40,8 +40,13 @@ SPELL_CHECK = {}
 
 
 async def parse_link(client, message) -> str:
-    chat_id = message.chat.id
-    msg_id = message.message_id
+    if isinstance(message, int):
+        chat_id = message
+        msg_id = None
+    else:
+        chat_id = message.chat.id
+        msg_id = message.message_id
+    
     username = USERNAMES.get(chat_id)
     if username is None:
         try:
@@ -52,9 +57,18 @@ async def parse_link(client, message) -> str:
         else:
             username = chat.username if chat.username else ""
         USERNAMES[chat_id] = username
+    
     if username:
-        return f"https://t.me/{username}/{msg_id}"
-    return f"https://t.me/c/{str(chat_id).replace('-100', '')}/{msg_id}"
+        if msg_id is not None:
+            return f"https://t.me/{username}/{msg_id}"
+        else:
+            return f"https://t.me/{username}"
+    
+    if msg_id is not None:
+        return f"https://t.me/c/{str(chat_id).replace('-100', '')}/{msg_id}"
+    else:
+        return f"https://t.me/c/{str(chat_id).replace('-100', '')}"
+
 
 
 @Client.on_message(filters.group & filters.text & filters.incoming)
