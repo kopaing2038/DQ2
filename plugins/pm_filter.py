@@ -122,189 +122,274 @@ async def next_page(bot, query):
         await query.answer(script.OLD_ALRT_TXT.format(query.from_user.first_name), show_alert=True)
         return
 
-    files_a, n_offset, total = await get_search_results(query.message.chat.id, search, offset=offset, filter=True)
-    if not files_a:
-        files_b, n_offset, total = await get_search_results2(query.message.chat.id, search, offset=offset, filter=True)
+    files, n_offset, total = await get_search_results(query.message.chat.id, search, offset=offset, filter=True)
     try:
         n_offset = int(n_offset)
     except:
         n_offset = 0
 
-    if not files_a and not files_b:
-        return
-    files = files_a or files_b
+    if not files:
+        files_b, n_offset, total = await get_search_results2(query.message.chat.id, search, offset=offset, filter=True)
+        if not files_b:
+            return
 
     settings = await get_settings(query.message.chat.id)
     temp.SEND_ALL_TEMP[query.from_user.id] = files
-
     if 'is_shortlink' in settings.keys():
         ENABLE_SHORTLINK = settings['is_shortlink']
     else:
         await save_group_settings(query.message.chat.id, 'is_shortlink', False)
         ENABLE_SHORTLINK = False
-
-    btn = []
-    for file in files:
-        if ENABLE_SHORTLINK and settings['button']:
-            btn.append([
+    if ENABLE_SHORTLINK and settings['button']:
+        btn = [
+            [
                 InlineKeyboardButton(
-                    text=f"🔹 {file.file_name} [{get_size(file.file_size)}]",
+                    text=f"[{get_size(file.file_size)}] {file.file_name}",
                     url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
                 ),
-            ])
-        elif ENABLE_SHORTLINK and not settings['button']:
-            btn.append([
+            ]
+            for file in files
+        ]
+    elif ENABLE_SHORTLINK and not settings['button']:
+        btn = [
+            [
                 InlineKeyboardButton(
-                    text=f"🔹 {file.file_name}",
+                    text=f"{file.file_name}",
                     url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
                 ),
                 InlineKeyboardButton(
                     text=f"{get_size(file.file_size)}",
                     url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
                 ),
-            ])
-        elif settings['button'] and not ENABLE_SHORTLINK:
-            btn.append([
+            ]
+            for file in files
+        ]
+    elif settings['button'] and not ENABLE_SHORTLINK:
+        btn = [
+            [
                 InlineKeyboardButton(
-                    text=f"🔹 {file.file_name} [{get_size(file.file_size)}]",
+                    text=f"[{get_size(file.file_size)}] {file.file_name}",
                     callback_data=f'files#{file.file_id}'
                 ),
-            ])
-        else:
-            btn.append([
+            ]
+            for file in files
+        ]
+    else:
+        btn = [
+            [
                 InlineKeyboardButton(
-                    text=f"🔹 {file.file_name}",
+                    text=f"{file.file_name}",
                     callback_data=f'files#{file.file_id}'
                 ),
                 InlineKeyboardButton(
                     text=f"{get_size(file.file_size)}",
                     callback_data=f'files_#{file.file_id}',
                 ),
-            ])
+            ]
+            for file in files
+        ]
 
-    btn_b = []  # Add btn_b for files_b
-    if files_b:
-        if ENABLE_SHORTLINK and settings['button']:
-            btn_b = [
-                [
-                    InlineKeyboardButton(
-                        text=f"🔹 {file.file_name} [{get_size(file.file_size)}]",
-                        url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
-                    ),
-                ]
-                for file in files_b
+    if ENABLE_SHORTLINK and settings['button']:
+        btn_b = [
+            [
+                InlineKeyboardButton(
+                    text=f"[{get_size(file2.file_size)}] {file2.file_name}",
+                    url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file2.file_id}")
+                ),
             ]
-        elif ENABLE_SHORTLINK and not settings['button']:
-            btn_b = [
-                [
-                    InlineKeyboardButton(
-                        text=f"🔹 {file.file_name}",
-                        url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
-                    ),
-                    InlineKeyboardButton(
-                        text=f"{get_size(file.file_size)}",
-                        url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}")
-                    ),
-                ]
-                for file in files_b
+            for file2 in files
+        ]
+    elif ENABLE_SHORTLINK and not settings['button']:
+        btn_b = [
+            [
+                InlineKeyboardButton(
+                    text=f"{file2.file_name}",
+                    url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file2.file_id}")
+                ),
+                InlineKeyboardButton(
+                    text=f"{get_size(file2.file_size)}",
+                    url=await get_shortlink(query.message.chat.id, f"https://telegram.me/{temp.U_NAME}?start=files_{file2.file_id}")
+                ),
             ]
-        elif settings['button'] and not ENABLE_SHORTLINK:
-            btn_b = [
-                [
-                    InlineKeyboardButton(
-                        text=f"🔹 {file.file_name} [{get_size(file.file_size)}]",
-                        callback_data=f'files#{file.file_id}'
-                    ),
-                ]
-                for file in files_b
+            for file2 in files
+        ]
+    elif settings['button'] and not ENABLE_SHORTLINK:
+        btn_b = [
+            [
+                InlineKeyboardButton(
+                    text=f"[{get_size(file2.file_size)}] {file2.file_name}",
+                    callback_data=f'files#{file2.file_id}'
+                ),
             ]
-        else:
-            btn_b = [
-                [
-                    InlineKeyboardButton(
-                        text=f"🔹 {file.file_name}",
-                        callback_data=f'files#{file.file_id}'
-                    ),
-                    InlineKeyboardButton(
-                        text=f"{get_size(file.file_size)}",
-                        callback_data=f'files_#{file.file_id}',
-                    ),
-                ]
-                for file in files_b
-            ]
-
-    if settings.get('auto_delete', True):
-        pass
+            for file2 in files
+        ]
     else:
-        pass
+        btn_b = [
+            [
+                InlineKeyboardButton(
+                    text=f"{file2.file_name}",
+                    callback_data=f'files#{file2.file_id}'
+                ),
+                InlineKeyboardButton(
+                    text=f"{get_size(file2.file_size)}",
+                    callback_data=f'files_#{file2.file_id}',
+                ),
+            ]
+            for file2 in files
+        ]
 
-    if settings.get('max_btn', True):
-        MAX_B_TN = settings.get('max_btn_value', 10)
-        if 0 < offset <= MAX_B_TN:
-            off_set = 0
-        elif offset == 0:
-            off_set = None
-        else:
-            off_set = offset - MAX_B_TN
-
-        if n_offset == 0:
-            btn.append([
-                InlineKeyboardButton("⌫ 𝐁𝐀𝐂𝐊", callback_data=f"next_{req}_{key}_{off_set}"),
-                InlineKeyboardButton(f"{math.ceil(int(offset)/MAX_B_TN)+1} / {math.ceil(total/MAX_B_TN)}", callback_data="pages")
-            ])
-        elif off_set is None:
-            btn.append([
-                InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
-                InlineKeyboardButton(f"{math.ceil(int(offset)/MAX_B_TN)+1} / {math.ceil(total/MAX_B_TN)}", callback_data="pages"),
-                InlineKeyboardButton("𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{n_offset}")
-            ])
-        else:
-            btn.append([
-                InlineKeyboardButton("⌫ 𝐁𝐀𝐂𝐊", callback_data=f"next_{req}_{key}_{off_set}"),
-                InlineKeyboardButton(f"{math.ceil(int(offset)/MAX_B_TN)+1} / {math.ceil(total/MAX_B_TN)}", callback_data="pages"),
-                InlineKeyboardButton("𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{n_offset}")
-            ])
-    else:
-        MAX_B_TN = 10
-        if 0 < offset <= MAX_B_TN:
-            off_set = 0
-        elif offset == 0:
-            off_set = None
-        else:
-            off_set = offset - MAX_B_TN
-
-        if n_offset == 0:
-            btn.append([
-                InlineKeyboardButton("⌫ 𝐁𝐀𝐂𝐊", callback_data=f"next_{req}_{key}_{off_set}"),
-                InlineKeyboardButton(f"{math.ceil(int(offset)/10)+1} / {math.ceil(total/10)}", callback_data="pages")
-            ])
-        elif off_set is None:
-            btn.append([
-                InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"),
-                InlineKeyboardButton(f"{math.ceil(int(offset)/10)+1} / {math.ceil(total/10)}", callback_data="pages"),
-                InlineKeyboardButton("𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{n_offset}")
-            ])
-        else:
-            btn.append([
-                InlineKeyboardButton("⌫ 𝐁𝐀𝐂𝐊", callback_data=f"next_{req}_{key}_{off_set}"),
-                InlineKeyboardButton(f"{math.ceil(int(offset)/10)+1} / {math.ceil(total/10)}", callback_data="pages"),
-                InlineKeyboardButton("𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{n_offset}")
-            ])
-
-    btn.insert(0, [
-        InlineKeyboardButton("! Sᴇɴᴅ Aʟʟ Tᴏ PM !", callback_data=f"send_fall#files#{offset}#{req}"),
-        InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs ရွေးချယ်ပါ။ !", callback_data=f"select_lang#{req}")
-    ])
 
     try:
-        if settings.get('auto_delete', True):
-            await query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(btn))
+        if settings['max_btn']:
+            if 0 < offset <= 10:
+                off_set = 0
+            elif offset == 0:
+                off_set = None
+            else:
+                off_set = offset - 10
+            if n_offset == 0:
+                btn.append(
+                    [InlineKeyboardButton("⌫ 𝐁𝐀𝐂𝐊", callback_data=f"next_{req}_{key}_{off_set}"), InlineKeyboardButton(f"{math.ceil(int(offset)/10)+1} / {math.ceil(total/10)}", callback_data="pages")]
+                )
+            elif off_set is None:
+                btn.append([InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"), InlineKeyboardButton(f"{math.ceil(int(offset)/10)+1} / {math.ceil(total/10)}", callback_data="pages"), InlineKeyboardButton("𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{n_offset}")])
+            else:
+                btn.append(
+                    [
+                        InlineKeyboardButton("⌫ 𝐁𝐀𝐂𝐊", callback_data=f"next_{req}_{key}_{off_set}"),
+                        InlineKeyboardButton(f"{math.ceil(int(offset)/10)+1} / {math.ceil(total/10)}", callback_data="pages"),
+                        InlineKeyboardButton("𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{n_offset}")
+                    ],
+                )
         else:
-            await query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(btn))
+            if 0 < offset <= int(MAX_B_TN):
+                off_set = 0
+            elif offset == 0:
+                off_set = None
+            else:
+                off_set = offset - int(MAX_B_TN)
+            if n_offset == 0:
+                btn.append(
+                    [InlineKeyboardButton("⌫ 𝐁𝐀𝐂𝐊", callback_data=f"next_{req}_{key}_{off_set}"), InlineKeyboardButton(f"{math.ceil(int(offset)/int(MAX_B_TN))+1} / {math.ceil(total/int(MAX_B_TN))}", callback_data="pages")]
+                )
+            elif off_set is None:
+                btn.append([InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"), InlineKeyboardButton(f"{math.ceil(int(offset)/int(MAX_B_TN))+1} / {math.ceil(total/int(MAX_B_TN))}", callback_data="pages"), InlineKeyboardButton("𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{n_offset}")])
+            else:
+                btn.append(
+                    [
+                        InlineKeyboardButton("⌫ 𝐁𝐀𝐂𝐊", callback_data=f"next_{req}_{key}_{off_set}"),
+                        InlineKeyboardButton(f"{math.ceil(int(offset)/int(MAX_B_TN))+1} / {math.ceil(total/int(MAX_B_TN))}", callback_data="pages"),
+                        InlineKeyboardButton("𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{n_offset}")
+                    ],
+                )
+    except KeyError:
+        await save_group_settings(query.message.chat.id, 'max_btn', True)
+        if 0 < offset <= 10:
+            off_set = 0
+        elif offset == 0:
+            off_set = None
+        else:
+            off_set = offset - 10
+        if n_offset == 0:
+            btn.append(
+                [InlineKeyboardButton("⌫ 𝐁𝐀𝐂𝐊", callback_data=f"next_{req}_{key}_{off_set}"), InlineKeyboardButton(f"{math.ceil(int(offset)/10)+1} / {math.ceil(total/10)}", callback_data="pages")]
+            )
+        elif off_set is None:
+            btn.append([InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"), InlineKeyboardButton(f"{math.ceil(int(offset)/10)+1} / {math.ceil(total/10)}", callback_data="pages"), InlineKeyboardButton("𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{n_offset}")])
+        else:
+            btn.append(
+                [
+                    InlineKeyboardButton("⌫ 𝐁𝐀𝐂𝐊", callback_data=f"next_{req}_{key}_{off_set}"),
+                    InlineKeyboardButton(f"{math.ceil(int(offset)/10)+1} / {math.ceil(total/10)}", callback_data="pages"),
+                    InlineKeyboardButton("𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{n_offset}")
+                ],
+            )
+
+    if files_b:
+
+        try:
+            if settings['max_btn']:
+                if 0 < offset <= 10:
+                    off_set = 0
+                elif offset == 0:
+                    off_set = None
+                else:
+                    off_set = offset - 10
+                if n_offset == 0:
+                    btn_b.append(
+                        [InlineKeyboardButton("⌫ 𝐁𝐀𝐂𝐊", callback_data=f"next_{req}_{key}_{off_set}"), InlineKeyboardButton(f"{math.ceil(int(offset)/10)+1} / {math.ceil(total/10)}", callback_data="pages")]
+                    )
+                elif off_set is None:
+                    btn_b.append([InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"), InlineKeyboardButton(f"{math.ceil(int(offset)/10)+1} / {math.ceil(total/10)}", callback_data="pages"), InlineKeyboardButton("𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{n_offset}")])
+                else:
+                    btn_b.append(
+                        [
+                            InlineKeyboardButton("⌫ 𝐁𝐀𝐂𝐊", callback_data=f"next_{req}_{key}_{off_set}"),
+                            InlineKeyboardButton(f"{math.ceil(int(offset)/10)+1} / {math.ceil(total/10)}", callback_data="pages"),
+                            InlineKeyboardButton("𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{n_offset}")
+                        ],
+                    )
+            else:
+                if 0 < offset <= int(MAX_B_TN):
+                    off_set = 0
+                elif offset == 0:
+                    off_set = None
+                else:
+                    off_set = offset - int(MAX_B_TN)
+                if n_offset == 0:
+                    btn_b.append(
+                        [InlineKeyboardButton("⌫ 𝐁𝐀𝐂𝐊", callback_data=f"next_{req}_{key}_{off_set}"), InlineKeyboardButton(f"{math.ceil(int(offset)/int(MAX_B_TN))+1} / {math.ceil(total/int(MAX_B_TN))}", callback_data="pages")]
+                    )
+                elif off_set is None:
+                    btn_b.append([InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"), InlineKeyboardButton(f"{math.ceil(int(offset)/int(MAX_B_TN))+1} / {math.ceil(total/int(MAX_B_TN))}", callback_data="pages"), InlineKeyboardButton("𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{n_offset}")])
+                else:
+                    btn_b.append(
+                        [
+                            InlineKeyboardButton("⌫ 𝐁𝐀𝐂𝐊", callback_data=f"next_{req}_{key}_{off_set}"),
+                            InlineKeyboardButton(f"{math.ceil(int(offset)/int(MAX_B_TN))+1} / {math.ceil(total/int(MAX_B_TN))}", callback_data="pages"),
+                            InlineKeyboardButton("𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{n_offset}")
+                        ],
+                    )
+        except KeyError:
+            await save_group_settings(query.message.chat.id, 'max_btn', True)
+            if 0 < offset <= 10:
+                off_set = 0
+            elif offset == 0:
+                off_set = None
+            else:
+                off_set = offset - 10
+            if n_offset == 0:
+                btn_b.append(
+                    [InlineKeyboardButton("⌫ 𝐁𝐀𝐂𝐊", callback_data=f"next_{req}_{key}_{off_set}"), InlineKeyboardButton(f"{math.ceil(int(offset)/10)+1} / {math.ceil(total/10)}", callback_data="pages")]
+                )
+            elif off_set is None:
+                btn_b.append([InlineKeyboardButton("𝐏𝐀𝐆𝐄", callback_data="pages"), InlineKeyboardButton(f"{math.ceil(int(offset)/10)+1} / {math.ceil(total/10)}", callback_data="pages"), InlineKeyboardButton("𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{n_offset}")])
+            else:
+                btn_b.append(
+                    [
+                        InlineKeyboardButton("⌫ 𝐁𝐀𝐂𝐊", callback_data=f"next_{req}_{key}_{off_set}"),
+                        InlineKeyboardButton(f"{math.ceil(int(offset)/10)+1} / {math.ceil(total/10)}", callback_data="pages"),
+                        InlineKeyboardButton("𝐍𝐄𝐗𝐓 ➪", callback_data=f"next_{req}_{key}_{n_offset}")
+                    ],
+                )
+
+    if files_b:
+        buttons = btn_b
+    else:
+        buttons = btn
+
+    reply_markup = InlineKeyboardMarkup(buttons)
+
+    try:
+        await query.message.edit_text(
+            text=message,
+            reply_markup=reply_markup,
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True
+        )
     except MessageNotModified:
         pass
 
-    await query.answer()
 
 
 @Client.on_callback_query(filters.regex(r"^lang"))
