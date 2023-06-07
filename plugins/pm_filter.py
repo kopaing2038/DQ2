@@ -165,7 +165,7 @@ async def next_page(bot, query):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"[{get_size(file2.file_size)}] {file2.file_name}", url=f'{(await parse_link(file2["chat_id"], file2["message_id"]))}'
+                    text=f"{file2.file_name} [{get_size(file2.file_size)}] ", url=f'{(await parse_link(file2["chat_id"], file2["message_id"]))}'
                 ),
             ]
             for file2 in files
@@ -316,7 +316,7 @@ async def pmnext_page(bot, query):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"[{get_size(file.file_size)}] {file.file_name}", callback_data=f'files#{file.file_id}'
+                    text=f"{file.file_name} [{get_size(file.file_size)}] ", callback_data=f'files#{file.file_id}'
                 ),
             ]
             for file in files
@@ -334,31 +334,6 @@ async def pmnext_page(bot, query):
             ]
             for file in files
         ]
-    try:
-        if settings['auto_delete']:
-            btn.insert(0, 
-                [
-                    InlineKeyboardButton(f'ɪɴꜰᴏ', 'reqinfo'),
-                    InlineKeyboardButton(f'ᴍᴏᴠɪᴇ', 'minfo'),
-                    InlineKeyboardButton(f'ꜱᴇʀɪᴇꜱ', 'sinfo')
-                ]
-            )
-        else:
-            btn.insert(0, 
-                [
-                    InlineKeyboardButton(f'ᴍᴏᴠɪᴇ', 'minfo'),
-                    InlineKeyboardButton(f'ꜱᴇʀɪᴇꜱ', 'sinfo')
-                ]
-            )            
-    except KeyError:
-        await save_group_settings(query.message.chat.id, 'auto_delete', True)
-        btn.insert(0, 
-            [
-                InlineKeyboardButton(f'ɪɴꜰᴏ', 'reqinfo'),
-                InlineKeyboardButton(f'ᴍᴏᴠɪᴇ', 'minfo'),
-                InlineKeyboardButton(f'ꜱᴇʀɪᴇꜱ', 'sinfo')
-            ]
-        )
     try:
         if settings['max_btn']:
             if 0 < offset <= 10:
